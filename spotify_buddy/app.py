@@ -7,7 +7,7 @@ from helpers import auth
 # imported modules
 import spotipy
 
-credentials = auth.checkSpotifyCredentials()
+credentials = auth.get_spotify_credentials()
 USERNAME = os.getenv('SPOTIFY_USERNAME')
 
 
