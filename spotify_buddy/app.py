@@ -2,7 +2,7 @@
 import os
 
 # local modules
-import auth
+from helpers import auth
 
 # imported modules
 import spotipy
