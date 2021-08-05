@@ -5,8 +5,18 @@ from helpers.parser import print_songs
 # packages
 from dotenv import load_dotenv
 from classes.filters import first_letter
+from flask import Flask
 
 load_dotenv()
+app = Flask(__name__)
+
+@app.route('/')
+def run_app():
+    sesh = SpotifySession()
+    playlists = sesh.fetch_user_playlists()
+    return playlists
+
+"""
 sesh = SpotifySession()
 
 new_collection = Collection('new_collection')
@@ -21,3 +31,4 @@ filters = [first_letter.Filter('c')]
 result = new_collection.apply_filters(filters)
 
 print_songs(result.tracks)
+"""

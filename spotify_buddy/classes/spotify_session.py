@@ -16,6 +16,10 @@ class SpotifySession:
     def __init__(self):
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=SCOPE))
 
+    # Get current user's playlists
+    def fetch_user_playlists(self):
+        self.sp.current_user_playlists()
+
     # Takes a playlist ID and returns a Playlist object with all tracks
     def fetch_playlist(self, sp_id):
         playlist_json = self.sp.playlist(sp_id)
