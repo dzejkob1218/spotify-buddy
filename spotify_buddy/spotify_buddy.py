@@ -1,0 +1,23 @@
+# builtin modules
+from classes.spotify_session import SpotifySession
+from classes.collection import Collection
+from helpers.parser import print_songs
+# packages
+from dotenv import load_dotenv
+from classes.filters import first_letter
+
+load_dotenv()
+sesh = SpotifySession()
+
+new_collection = Collection('new_collection')
+
+#playlist = sesh.fetch_playlist('0idBt8K93C3UMOwgNLpdHB')  # *
+playlist = sesh.fetch_playlist('6RA3mmWJG6wDrzZEcZIwnK') # P
+
+new_collection.subcolls.append(playlist)
+
+filters = [first_letter.Filter('c')]
+
+result = new_collection.apply_filters(filters)
+
+print_songs(result.tracks)
