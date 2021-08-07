@@ -4,6 +4,8 @@ from classes.spotify_session import SpotifySession
 from flask_session import Session
 import uuid
 
+# testing
+
 # flask and flask_session setup
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)  # secret key for flask sessions
