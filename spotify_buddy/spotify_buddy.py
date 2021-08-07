@@ -1,34 +1,71 @@
-# builtin modules
+import os
+from flask import Flask, session, request, redirect
 from classes.spotify_session import SpotifySession
-from classes.collection import Collection
-from helpers.parser import print_songs
-# packages
-from dotenv import load_dotenv
-from classes.filters import first_letter
-from flask import Flask
+from flask_session import Session
+import uuid
 
-load_dotenv()
+# flask and flask_session setup
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(64)  # secret key for flask sessions
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_DIR'] = './.flask_session/'
+Session(app)
 
+# Make sure there is a folder to store caches
+caches_folder = './.spotify_caches/'
+if not os.path.exists(caches_folder):
+    os.makedirs(caches_folder)
+
+
+# Returns the path to cache for each session
+def session_cache_path():
+    return caches_folder + session.get('uuid')
+
+
+# default route
 @app.route('/')
-def run_app():
-    sesh = SpotifySession()
-    playlists = sesh.fetch_user_playlists()
-    return playlists
+def index():
+    # Gives a random ID to a new user without a session
+    if not session.get('uuid'):
+        session['uuid'] = str(uuid.uuid4())
 
-"""
-sesh = SpotifySession()
+    if not session.get('sp'):
+        return '<h2><a href="/login">Sign in</a></h2>'
 
-new_collection = Collection('new_collection')
+    sp = session.get('sp')
+    return f'<h2>Hi, {sp.connection.me()["display_name"]}' \
+           f'<small><a href="/logout">[sign out]<a/></small></h2>'
 
-#playlist = sesh.fetch_playlist('0idBt8K93C3UMOwgNLpdHB')  # *
-playlist = sesh.fetch_playlist('6RA3mmWJG6wDrzZEcZIwnK') # P
 
-new_collection.subcolls.append(playlist)
+@app.route('/login')
+def login():
+    # Create a SpotifySession object which will initialize spotipy Authorization Manager to validate user
+    sp = SpotifySession(session_cache_path())
+    session['sp'] = sp
 
-filters = [first_letter.Filter('c')]
+    # Redirect the user to authorization site
+    if not sp.auth_manager.validate_token(sp.cache_handler.get_cached_token()):
+        auth_url = sp.auth_manager.get_authorize_url()
+        return redirect(auth_url)
+    else:
+        # Redirect back to home page if user already logged in
+        return redirect('/')
 
-result = new_collection.apply_filters(filters)
 
-print_songs(result.tracks)
-"""
+@app.route('/callback')
+def callback():
+    if request.args.get("code"):
+        sp = session.get('sp')
+        sp.connect(request.args.get("code"))
+        return redirect('/')
+
+
+@app.route('/logout')
+def logout():
+    try:
+        # Remove the CACHE file (.cache-test) so that a new user can authorize.
+        os.remove(session_cache_path())
+        session.clear()
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
+    return redirect('/')
