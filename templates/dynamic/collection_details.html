@@ -1,0 +1,27 @@
+<div id="collectionDetails" class="d-flex h-100 border-bottom border-secondary" style="display: none">
+    <div class="d-flex justify-content-center" style="overflow:hidden; height: 25vh; width: 25vh;">
+        <img id="collectionImage" src={{collection['image']}} class="rounded h-100"  data-bs-toggle="modal" data-bs-target="#collectionCover" >
+    </div>
+        <div class="mt-2 mb-5 mx-3 text-white">
+            <h3 class="fw-bold ">{{collection['name']|limit_length(100)}}</h3>
+            <h4>by {{collection['owner_name']}}</h4>
+            <div class="fw-bold mt-4">{{collection['total']}} tracks</div>
+            <div class="fw-bold" id="activeFiltersNumber"></div>
+            <div class="fw-bold" data-included="0" id="includedTracksNumber"></div>
+
+        </div>
+        <!-- Collection actions -->
+        <div class="ms-auto p-3">
+            <button onclick="selectItem('{{collection['uri']}}', 'playlist', true)"> Refresh </button>
+            <button data-bs-toggle="modal" data-bs-target="#modalSave"> Save </button>
+            <button data-bs-toggle="modal" data-bs-target="#modalPlay"> Play </button>
+        </div>
+</div>
+
+<script>
+    $( "#collectionDetails" ).fadeIn();
+</script>
+
+{% set label = 'collectionCover' %}
+{% set image = collection['image'] %}
+{% include 'components/modals/modal_cover.html' %}

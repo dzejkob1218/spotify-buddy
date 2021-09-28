@@ -1,0 +1,34 @@
+<!-- Modal -->
+<div class="modal fade" id="modalPlay" tabindex="-1" aria-labelledby="modalPlay" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Play the tracks</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+
+          <label for="playNumber">Number:</label>
+          <input id="playNumber" min="1" max="{{data|length}}" value="{{data|length}}" type="number">
+          <input id="playRandom" type="checkbox">
+          <label for="playRandom">Shuffle</label>
+          <button value="queue" class="playModalButton">Queue</button>
+          <button value="play" class="playModalButton">Play</button>
+
+
+        <script>
+          $( ".playModalButton" ).click(function(event) {
+            var queue = ($(this).val() == "queue");
+            var number= $( "#playNumber" ).val();
+            var random= $( "#playRandom" ).is(":checked");
+            playCollection(queue,number,random);
+            $( "#modalPlay" ).modal('hide');
+          });
+        </script>
+
+
+      </div>
+    </div>
+  </div>
+</div>

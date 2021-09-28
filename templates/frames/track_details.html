@@ -1,0 +1,90 @@
+<div class="text-white p-1 text-center">
+
+    <hr>
+
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Track <span class="fw-bold"> #{{data['number']}} </span> from <span
+                class="fw-bold">{{parent['name']}} </span></h6>
+    </li>
+
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Released <span class="fw-bold">{{data|format_date}}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"><span class="fw-bold">{{data['duration']|format_duration}}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0">{% if data['explicit'] %} <span class="fw-bold">  Explicit </span> {% else %} Not Explicit {%
+            endif %}</h6>
+    </li>
+
+    {% if has_features %}
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"><span class="fw-bold">{{data['tempo']|format_attribute('tempo')}}</span> BPM </h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Key of <span class="fw-bold">{{data['key_name']}}</span>, {{data['signature']}}/4 </h6>
+    </li>
+
+    <hr>
+
+    {% endif %}
+
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Popularity: <span class="fw-bold">{{data['popularity']|format_attribute('popularity')}}</span></h6>
+    </li>
+
+    {% if has_features %}
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Valence: <span class="fw-bold">{{data['valence']|format_attribute('valence')}}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Energy: <span class="fw-bold">{{data['energy']|format_attribute('energy')}}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Danceability: <span class="fw-bold">{{data['dance']|format_attribute('dance')}}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Speech: <span class="fw-bold">{{data['speech']|format_attribute('speech')}}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Acoustic: <span class="fw-bold">{{data['acoustic']|format_attribute('acoustic') }}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Instrumental: <span class="fw-bold">{{data['instrumental']|format_attribute('instrumental')}}</span></h6>
+    </li>
+
+    <li class="track-detail p-1">
+        <h6 class="m-0"> Live: <span class="fw-bold">{{data['live']|format_attribute('live')}}</span></h6>
+    </li>
+
+    {% endif %}
+
+    <hr>
+
+    {% if not has_features %}
+
+    There is no data available about this track.
+    <br>
+    It will be excluded from all sorting and filtering.
+
+    <hr>
+
+
+    {% endif %}
+
+
+</div>

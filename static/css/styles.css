@@ -1,0 +1,235 @@
+/* ---- */
+/* TODO: consider breaking into general and local styles */
+
+/* TODO: what's taht? */
+.sort-detail.active {
+    background-color:  linear-gradient(90deg, rgba(148,74,255,1) 0%, rgba(43,255,169,1) 100%); !important;
+}
+
+
+
+/* --General-- */
+
+* {
+   color: white;
+   font-family: Arial !important;
+}
+
+body {
+    height: 100vh;
+    background: black;
+}
+
+.row {
+
+    margin: 0;
+    padding: 0 !important;
+
+}
+/*TODO: where is this used?*/
+.col {
+    overflow-auto;
+    max-height: 100vh;
+    //padding: 10px;
+}
+
+.column {
+    max-height: 100vh !important;
+    overflow: hidden;
+    padding: 0px;
+}
+
+.side-column {
+    background: black; //rgb(18,18,18,0.8);
+    padding: 8px ;
+
+    //border-radius: 10px;
+}
+
+/* --Buttons-- */
+
+
+button {
+    border: 1px solid grey;
+    padding: 0px;
+    margin: 3px;
+    border-radius: 20px;
+    color: white;
+    background-color: #181818;
+    white-space: nowrap;
+}
+button:hover {
+    border: 2px solid white;
+}
+
+button.active, button.search-type-active {
+    border: 2px solid white;
+    background-color: grey;
+}
+
+button.accordion-button {
+    background-color: red;
+}
+
+
+/* --Search-- */
+
+.search-result {
+    background-color: black !important;
+    padding: 6px 8px;
+}
+
+.search-result.item-enabled:hover, .track-detail:hover, .sort-detail:hover {
+    background-color: #181818 !important;
+}
+
+
+/* --Login-- */
+
+a.login {
+    border: solid white 1px !important;
+    text-decoration: none !important;
+    color: white !important;
+    background-color: grey;
+    //width: 350px;
+}
+
+a.login:hover {
+    text-decoration: underline !important;
+
+}
+
+
+/* --Collection attributes-- */
+
+.collection-attribute:hover {
+    background: #282828;
+}
+
+.collection-attribute.sort-normal {
+    font-weight: bold;
+    background: #383838;
+}
+
+.collection-attribute.sort-reverse {
+    font-weight: bold;
+    background: #382818;
+}
+
+
+/* --Sliders-- */
+
+/* Disable default jquery sliders look */
+.ui-slider-range {
+  //background: linear-gradient(90deg, rgba(148,74,255,1) 0%, rgba(43,255,169,1) 100%);
+}
+
+.ui-slider-handle {
+    background: none !important;
+    border: none !important;
+}
+
+.ui-slider {
+    background: none !important;
+    border: none !important;
+}
+
+/* Set style of new slider elements */
+.slider-marker{
+    order-left: 2px solid white;
+    height: 120%;
+    margin-top: -2px;
+    z-index: 2 !important;
+}
+
+.slider-handle-label{
+    cursor: col-resize;
+    padding-top: 3px;
+}
+
+.slider-handle-label.active{
+    display: block !important;
+    opacity: 1 !important;
+}
+
+
+/* --Sort label-- */
+
+.sort-label{
+    cursor: pointer;
+    background: none;
+    transition: 0.6s;
+}
+
+.sort-label:hover {
+    background: black;
+    transition: 0.6s;
+}
+
+
+/* --Currently Playing-- */
+
+.currently-playing{
+    background: black;
+    border: none;
+    transition: 0.6s;
+}
+
+.currently-playing:hover{
+    background-color: black;
+    transition: 0.6s;
+}
+
+
+/* --Switch filters-- */
+
+.switchButton {
+    cursor: pointer !important;
+    width: 130px;
+    white-space: nowrap !important;
+    margin: 1px !important;
+    padding: 0px !important;
+}
+
+.switchButton:hover {
+    border: solid white 1px;
+    margin: 0px !important;
+}
+
+.switchLabel {
+    font-weight: normal !important;
+    background: none !important;
+    transition: 0.6s;
+}
+
+/* The switch has been manually selected */
+.switchLabel.active {
+    font-weight: bold !important;
+    background: none !important;
+    transition: 0.6s;
+}
+
+/* The switch has been deactivated because another one is selected */
+.switchLabel.inactive {
+    background: grey !important;
+    transition: 0.6s;
+}
+
+
+/* --Page buttons-- */
+
+.pageButton{
+    background: #282828;
+    border-radius: 10px;
+    margin: 2px;
+    cursor: pointer !important;
+}
+
+.pageButton:hover {
+    background: #383838;
+}
+
+.pageButton.active{
+   font-weight: bold;
+   background: grey; //linear-gradient(90deg, rgba(148,74,255,1) 0%, rgba(43,255,169,1) 100%); !important;
+}

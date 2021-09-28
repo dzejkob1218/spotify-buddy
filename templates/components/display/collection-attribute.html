@@ -1,0 +1,14 @@
+<div id="{{attribute}}Button" class="collection-attribute text-white" style="display:none">
+
+    <div class="ps-4 pb-1 pt-3 d-flex" onmousedown="sortTracks('{{attribute}}')">
+        <div class="me-auto"> {{attribute|capitalize}} </div>
+        <div class="attribute-clarification me-2 fw-light" style="display: none" > Average: </div>
+        <div class= "me-5"> {{averages[attribute]['avg']|format_attribute(attribute, True)}} </div>
+    </div>
+
+    {% if attribute in ['explicit', 'mode'] %}
+        {% include 'components/filters/switch_filter.html' %}
+    {% else %}
+        {% include 'components/filters/slider_filter.html' %}
+    {% endif %}
+</div>

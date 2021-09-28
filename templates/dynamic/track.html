@@ -1,0 +1,35 @@
+<div class="p-2 w-100 d-flex">
+    <img src={{data['image']}} class="rounded align-self-center" data-bs-toggle="modal" data-bs-target="#trackCover"
+         style="width: 150px; height: 150px;">
+    <div class="px-3 align-self-end">
+        {% if auth %}
+        {% include 'components/buttons/play_selected.html' %}
+        {% include 'components/buttons/queue_selected.html' %}
+        {% endif %}
+        <h4 class="fw-bold"> {{data['name']}}</h4>
+        <h5> {{data['artists']}} </h5>
+    </div>
+</div>
+
+<div id="lyricsButton" class="pt-1 mx-2 w-auto border text-center fw-bold rounded-pill" type="button"
+     data-bs-toggle="collapse"
+     data-bs-target="#collapseLyrics" aria-expanded="false"
+     aria-controls="collapseLyrics"
+     style="background: none; border: none; height: 30px;">
+    Lyrics
+</div>
+
+<div class="flex-grow-1 overflow-auto">
+    <div class="collapse show" id="collapseLyrics">
+        {% include 'frames/track_lyrics.html' %}
+    </div>
+
+    {% include 'frames/track_details.html' %}
+</div>
+
+
+{# Modal with fullscreen cover image #}
+{% set label = 'trackCover' %}
+{% set image = data['image'] %}
+{% include 'components/modals/modal_cover.html' %}
+

@@ -1,0 +1,16 @@
+
+  <!--  <span class="fw-bold">{{track['name']}}</span> by <span class="fw-bold">{{track['artists']}}</span> -->
+
+    <div id="{{track['uri']}}" class="currently-playing rounded d-flex justify-content-start bg-secondary"
+        onmousedown="selectItem(this.id, 'track')" style="width: 237px; cursor: pointer !important;">
+
+        {% if track['miniature'] %}
+        <img src="{{track['miniature']}}" alt="{{ track['name'] }} image" width="50" height="50">
+        {% endif %}
+
+        <div class="px-2 overflow-hidden text-nowrap text-white">
+            <span class="fw-bold">{{ track['name'] | limit_length(20)}}</span><br>{{track['artists']| limit_length(21)}}
+        </div>
+
+    </div>
+

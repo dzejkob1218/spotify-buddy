@@ -1,0 +1,26 @@
+<!-- A filter has - attribute, max and min values, unit -->
+<div class="filter filter-switch d-flex justify-content-evenly align-items-center" data-criterium="{{attribute}}" style="padding: 8px 48px 12px 24px">
+
+    <!-- TODO: Repetition -->
+    <div class="switchButton text-white rounded-pill" style="padding: 0" onmousedown="switchFilter('{{attribute}}', true)">
+        <div id="{{attribute}}SwitchTrue" class="switchLabel text-center inactive switchTrue px-3 py-1 w-100 h-100 rounded-pill">
+       <!--  TODO: find a better way -->
+        {% if attribute == 'explicit' %}
+            Explicit
+        {% else %}
+            Major
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="switchButton text-white rounded-pill" style="padding: 0"  onmousedown="switchFilter('{{attribute}}', false)">
+        <div id="{{attribute}}SwitchFalse" class="switchLabel text-center inactive switchFalse px-3 py-1 w-100 h-100 rounded-pill">
+        {% if attribute == 'explicit' %}
+            Not Explicit
+        {% else %}
+            Minor
+        {% endif %}
+        </div>
+    </div>
+
+</div>
