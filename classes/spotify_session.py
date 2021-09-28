@@ -5,12 +5,17 @@ from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from spotipy.cache_handler import CacheFileHandler
 from helpers.parser import uri_to_url, filter_false_tracks
 import time
+from dotenv import load_dotenv
 
 """
 Responsible for connecting and exchanging data with spotify
 
 
 """
+
+load_dotenv()
+
+
 # The authorization scope for Spotify API needed to run this app
 SCOPE = 'user-top-read user-read-currently-playing user-modify-playback-state playlist-read-private playlist-read-collaborative playlist-modify-private'
 
