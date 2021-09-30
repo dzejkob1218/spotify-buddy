@@ -26,7 +26,7 @@ class GeniusSession:
         try:
             page = self.connection.search_song(name, artists[0])
         except ProxyError:
-            return 'Genius has been blocked'
+            raise
 
         # Check if any of the listed artists and the track title more or less match the result.
         artist_match = any([(fuzz.ratio(page.artist.lower(), artist.lower()) > 70) for artist in artists])

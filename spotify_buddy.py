@@ -14,6 +14,8 @@ import uuid
 from babel.dates import format_datetime
 from datetime import datetime, timedelta
 from time import time
+from requests.exceptions import ProxyError
+
 
 # flask and flask_session setup
 app = Flask(__name__)
@@ -446,11 +448,14 @@ def track_details():
 @app.route('/_lyrics')
 def track_lyrics():
     track = session.get('selected_track')
-    lyrics = session.get('genius').get_lyrics(track)
-    if lyrics:
-        return lyrics
-    else:
-        return "Can't find lyrics for this one"
+
+    # On pythonanywhere.com the app will be prevented from accessing the web and a ProxyError will be raised
+    try:
+        lyrics = session.get('genius').get_lyrics(track)
+    except ProxyError:
+        return render_template('components/display/lyrics_blocked.html', link=None)
+
+    return lyrics
 
 
 @app.route('/_current')
