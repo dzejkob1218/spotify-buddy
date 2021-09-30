@@ -45,7 +45,7 @@ class Track(Collection):
 
         if self.audio_features:
             self.details.update({
-                'valence': self.audio_features['valence'] * 100,
+                'mood': self.audio_features['valence'] * 100,
                 'energy': self.audio_features['energy'] * 100,
                 'dance': self.audio_features['danceability'] * 100,
                 'speech': self.audio_features['speechiness'] * 100,

@@ -11,20 +11,20 @@
     <div class="slider-range-overlay w-100 h-100 rounded" style="background: grey; ">
     </div>
 
-    <div id="customHandleMin" class="position-relative" style="top:50%; width: 0px; height: 0px">
-      <div class="slider-handle-bubble position-relative text-white text-center rounded-pill" style="background: none; right:23px; bottom:13px; width:30px; height:30px">
+    <div id="customHandleMin" class="position-relative" style="top:50%; width: 0px; height: 0px;">
+      <div class="slider-handle-bubble position-relative text-white text-end rounded-pill " style="background: none; right:23px; bottom:13px; width:30px; height:30px">
          <div class="slider-handle-label text-white rounded-pill h-100 w-100">42</div>
       </div>
     </div>
 
-    <div id="customHandleMax" class="position-relative" style="left:75%; top:50%;  width: 0px; height: 0px ">
-      <div class="slider-handle-bubble position-relative text-white text-center rounded-pill" style="background: none; bottom:13px; width:30px; height:30px">
-        <div class="slider-handle-label text-white  rounded-pill h-100 w-100">42</div>
+    <div id="customHandleMax" class="position-relative" style="left:75%; top:50%;  width: 0px; height: 0px;">
+      <div class="slider-handle-bubble position-relative text-white text-start rounded-pill" style="background: none; bottom:13px; width:30px; height:30px">
+        <div class="slider-handle-label text-white rounded-pill h-100 w-100">42</div>
       </div>
     </div>
 </div>
 
-<div style="height: 98vh; overflow-y: scroll;">
+<div style="overflow-y: scroll;">
 
     {# Filters #}
     {% for attribute in averages %}
@@ -33,8 +33,9 @@
 
     {# Invalid filters #}
     {% if invalid %}
+        {# These static elements have a 'collection-attribute' class to include them in the fade-in #}
         <hr class="mb-1 p-0 text-white collection-attribute" style="display: none">
-        <p class="m-0 p-0" style="color: grey">These filters are disabled, possibly because every song in the playlist has the same value.</p>
+        <p class="m-0 p-0 collection-attribute" style="color: grey; display: none">These filters are disabled, possibly because every song in the playlist has the same value.</p>
         {% for attribute in invalid %}
             {% include 'components/display/invalid-attribute.html' %}
         {% endfor %}

@@ -9,7 +9,6 @@ class Playlist(Collection):
     def __init__(self, uri, sp, subcolls=None, spotify_object=None):
         super(Playlist, self).__init__(uri, sp, subcolls, spotify_object)
         self.type = 'playlist'
-        #self.filters = ['number', 'signature', 'release_year', 'duration', 'tempo', 'popularity', 'dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'valence', 'mode', 'explicit']
 
     def load_details(self):
         print("Loading own details")
@@ -48,7 +47,7 @@ class Playlist(Collection):
 
         # Count up attributes of included songs which can be nicely averaged out and presented
         # TODO : Add a functionality for presenting attributes which can't be just averaged (date, key, signature, most popular artist etc.)
-        summable_child_attributes = {'signature', 'release_year', 'tempo', 'popularity', 'duration', 'valence', 'dance', 'speech', 'acoustic', 'instrumental', 'live', 'number', 'energy', 'explicit', 'mode'}
+        summable_child_attributes = ['popularity', 'energy', 'mood', 'dance', 'speech', 'acoustic', 'instrumental', 'live', 'release_year', 'number', 'duration', 'tempo', 'signature', 'mode', 'explicit']
 
         self.average_children_details(summable_child_attributes, features_count)
 
