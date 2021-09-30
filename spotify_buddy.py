@@ -448,7 +448,7 @@ def track_details():
 @app.route('/_lyrics')
 def track_lyrics():
     track = session.get('selected_track')
-
+    # TODO: Show a link to lyrics on genius.com along with the message
     # On pythonanywhere.com the app will be prevented from accessing the web and a ProxyError will be raised
     try:
         lyrics = session.get('genius').get_lyrics(track)

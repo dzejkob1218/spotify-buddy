@@ -1,6 +1,11 @@
-<span>
-Spotify Buddy has been blocked from accessing genius.com
-
-{% set popup_content = "This preview of the site is hosted for free, which prevents it from accessing the web and finding the lyrics. Check my repo on github to see what can be done about it!" %}
+<div class="d-flex">
+<div>
+    <span class="text-grey">Spotify Buddy has been blocked from loading the lyrics.</span>
+</div>
+{% set popup_content = "This app is hosted for free, which prevents it from accessing the web and finding the lyrics. Check my repo on github to see what can be done about it!" %}
 {% include 'components/decoration/help_popup.html' %}
-</span>
+</div>
+
+<script>
+    loadPopovers();
+</script>
