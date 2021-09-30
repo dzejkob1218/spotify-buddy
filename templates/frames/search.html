@@ -1,18 +1,14 @@
 <div class="pt-2 mt-2">
-
     <div class="d-flex justify-content-center">
         <input id="search-query" autocomplete="off" type="text" class="px-2 rounded-pill" style="margin: 3px; height: 30px; color:black;"
                placeholder="Search..." size="20">
-
         {# Load search type buttons, include user library only if user is authorized #}
         {% for type in (['playlist', 'track', 'library'] if user else ['playlist', 'track']) %}
             {% include 'components/buttons/search_type_button.html' %}
         {% endfor %}
-
     </div>
 
     <hr class="my-0">
-
     <div id="searchResults" class="overflow-auto position-absolute" style="max-height: 400px; width: 435px;">
         {# Placeholder for the search results #}
     </div>

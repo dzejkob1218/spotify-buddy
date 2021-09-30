@@ -1,2 +1,8 @@
 .env
 .idea
+.cache
+.flask_session/
+.spotify_caches/
+classes/__pycache__/
+classes/collections/__pycache__/
+helpers/__pycache__/
