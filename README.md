@@ -14,7 +14,7 @@ If, somehow, there is a demand, I could shell out a couple $ to move the site so
 
 Meanwhile, if you like the app and want to use it in its full functionality, you can download the source code and run it yourself.
 
-To do that, you would have to acquire API credentials for both Spotify and genius.com and store them as environment variables where the app is running. 
+To do that, you'd need to acquire API credentials for both Spotify and genius.com and store them as environment variables where the app is running. 
 Spotify Buddy will then be able to scrape genius.com and display lyrics on the page.
 Just please don't make the site you host yourself available to the public (see license).
 
