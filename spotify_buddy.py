@@ -38,6 +38,7 @@ def session_cache_path():
 def check_session():
     # Gives a random ID to a new user without a session
     if not session.get('uuid'):
+        print("STARTING SESSION")
         session['uuid'] = str(uuid.uuid4())
         sp = SpotifySession(session_cache_path())
         session['sp'] = sp
@@ -404,6 +405,9 @@ def logout():
 @app.route('/_search')
 def search():
     sp = session.get('sp')
+    if not sp:
+        check_session()
+        exit()
     query = request.args.get('q', type=str)
     search_type = request.args.get('type', type=str)
     # Search spotify

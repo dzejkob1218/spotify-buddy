@@ -1,6 +1,7 @@
 from helpers.parser import uniform_title
 from fuzzywuzzy import fuzz
 from lyricsgenius import Genius
+from requests.exceptions import ProxyError
 import os
 
 
@@ -21,9 +22,11 @@ class GeniusSession:
         artists = track.details['artists'].split(', ')
         print(artists)
         print(f"Searching for lyrics to {name} by {artists[0]}")
-        page = self.connection.search_song(name, artists[0])
-        if not page:
-            return None
+
+        try:
+            page = self.connection.search_song(name, artists[0])
+        except ProxyError:
+            return 'Genius has been blocked'
 
         # Check if any of the listed artists and the track title more or less match the result.
         artist_match = any([(fuzz.ratio(page.artist.lower(), artist.lower()) > 70) for artist in artists])
