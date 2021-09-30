@@ -12,7 +12,7 @@ Displaying the link to the page with the lyrics is the best alternative Spotify 
 
 If, somehow, there is a demand, I could shell out a couple $ to move the site somewhere where it can access the web freely.
 
-If you like the app and want to use it in it's full functionality now, you can download the source code and run it yourself.
+Meanwhile, if you like the app and want to use it in it's full functionality, you can download the source code and run it yourself.
 
 To do that, you would have to acquire API credentials for both Spotify and genius.com and store them as environment variables where the app is running. 
 Spotify Buddy will then be able to scrape genius.com and display lyrics on the page.
