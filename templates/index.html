@@ -19,34 +19,13 @@
     <link href="../static/css/styles.css" rel="stylesheet">
     <script src="../static/js/scripts.js"></script>
     <script src="../static/js/triggers_scripts.js"></script>
-    {% if user %}
+    {% if False %}
     <script src="../static/js/auth_scripts.js"></script>
     {% endif %}
 
     {# {% set gradient = 'linear-gradient(90deg, rgb' + gradient_colors[0]|string + '0%, rgb' +
     gradient_colors[1]|string + ' 100%)' %}
-    <style>
-
-        .ui-slider-range {
-
-        background: {
-
-        {
-            gradient
-        }
-        }
-        ;
-        }
-
-
-
-
-
-
-
-
-
-    </style>
+    <style>.ui-slider-range {background: {{gradient}};}</style>
     #}
 </head>
 
@@ -59,7 +38,7 @@
     <div class="column col-lg-3">
         <div class="side-column h-100 d-flex flex-column flex-fill">
             {% if user %}
-                {% include 'components/auth/logout.html' %}
+            {% include 'components/auth/logout.html' %}
             {% endif %}
             <div class="d-flex align-items-center mt-2">
                 <h3 class="fw-bold text-white pb-1 m-0">Spotify Buddy</h3>
@@ -83,13 +62,15 @@
             {# Placeholder for collection details #}
         </div>
 
-        <!-- TODO: h-75 shouldn't be here -->
-        <div id="collection-tracks" class="h-75" style="display:none">
-            {# {% if collection['total'] %}
-            <!-- Collection tracks loading spinner -->
-            {% include 'components/spinner.html' %}
-            {% endif %} #}
+        <div id="collection-tracks" style="display:none">
+
         </div>
+        <div id="tracks-spinner" class="mt-5" style="display: none;">
+            <!-- Collection tracks loading spinner -->
+                {% set spinner_text = "Loading..." %}
+                {% include 'components/decoration/spinner.html' %}
+        </div>
+
     </div>
 
     <div class="column col-lg-3">
@@ -101,3 +82,10 @@
 
 </body>
 </html>
+
+{# If a collection ID is passed by the application, immediately request it #}
+{% if collection %}
+<script>
+    selectItem('{{collection}}', 'playlist');
+</script>
+{% endif %}

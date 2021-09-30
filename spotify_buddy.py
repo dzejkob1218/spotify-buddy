@@ -16,7 +16,6 @@ from datetime import datetime, timedelta
 from time import time
 from requests.exceptions import ProxyError
 
-
 # flask and flask_session setup
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)  # secret key for flask sessions
@@ -52,7 +51,7 @@ def check_session():
 # Returns redirect to the last visited page
 def go_back():
     if session.get('selected_collection'):
-        return redirect('/collection?uri=' + session.get('selected_collection').uri)
+        return redirect('/?collection=' + session.get('selected_collection').uri)
     else:
         return redirect('/')
 
@@ -61,10 +60,12 @@ def go_back():
 @app.route('/')
 def index():
     check_session()
+    # If a collection is specified (for example when being redirected back) it will be requested when the page loads
+    request_collection = request.args.get('collection')
     # f = open("templates/rendered_file.html", "w")
     # f.write(render_template('index.html', data=data))
 
-    return render_template('index.html', user=session.get('user'))
+    return render_template('index.html', user=session.get('user'), collection=request_collection)
 
 
 @app.route('/_collection')
@@ -249,7 +250,7 @@ def funny_playlist_name_generator(name, changes):
 
         'tempo': ['slow', ' f a s t '],
         'release_year': ['old', 'fresh'],
-        'valence': ['serious', "more up-beat"],
+        'mood': ['serious', "more up-beat"],
 
         'signature': ['in wacky time signatures', 'in standard time signature'],
         'dance': ['impossible to dance to', 'only tracks you can dance to'],
@@ -529,6 +530,9 @@ def limit_length(text, max_len):
     else:
         return text[:max_len].strip() + '...'
 
+@app.template_filter()
+def format_attribute_name(name):
+    return name.replace('_', ' ').title()
 
 @app.template_filter()
 def format_attribute(value, attribute, average=False):
@@ -539,7 +543,7 @@ def format_attribute(value, attribute, average=False):
     if attribute in ['number', 'release_year']:
         return str(round(value))
 
-    if attribute in ['popularity', 'dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'live', 'valence']:
+    if attribute in ['popularity', 'dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'live', 'mood']:
         return str(round(value)) + ('%' if average else '')
 
     if attribute == 'tempo':

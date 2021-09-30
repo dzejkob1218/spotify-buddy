@@ -18,20 +18,7 @@ function selectSearchType(clicked, focus=true) {
     }
 }
 
-function requestDetails() {
-    $.ajax({
-        type: 'GET',
-        url: '/_details',
-        success: function (data) {
-            $("#collection-tracks").toggle();
-            $("#collection-filters").html(data['filters_html']);
-            loadGradients(data['gradient_colors']);
-            filtersFadeIn();
-            $("#collection-tracks").html(data['tracklist_html']);
-            $("#collection-tracks").fadeIn("slow");
-        }
-    });
-}
+
 
 
 function loadGradients(gradient_colors) {
@@ -40,13 +27,12 @@ function loadGradients(gradient_colors) {
     $(".ui-slider-range").css('background', sliderGradient);
     // Switch sliders
     let switchGradient = 'linear-gradient(90deg, rgba(' + gradient_colors[0] + ', 0.7) 0%, rgba(' + gradient_colors[1] + ', 0.7) 100%)';
-
     $(".switchButton").css('background', switchGradient);
     // If there is a third color in the gradient, it's for the background of the page
     if (gradient_colors.length == 3) {
         let bgGradient = 'linear-gradient(0deg,  rgb(0,0,0) 0%, rgb(' + gradient_colors[2] + ') 100%)';
         $("#pageBody").css("background", bgGradient);
-        setTimeout(bgFadeIn, 400);
+        $("#bg-overlay").fadeOut(1000);
     }
 
 }
@@ -110,18 +96,41 @@ function selectItem(itemID, itemType, refresh = false) {
 }
 
 function loadCollection(collectionID, refresh = false) {
-    $("#collection-details").fadeOut();
+    // Keep a promise for the fade out animations and the ajax call
+    // #TODO: Gather all elements that fade here into a common class
+    var fadeLength = 300; // The fades need to happen at the same speed to look good
+    var fadePromise = $("#collection-details").fadeOut(fadeLength).promise();
+    $("#collection-tracks").fadeOut(fadeLength);
+    $(".collection-attribute").fadeOut(fadeLength);
+    $("#bg-overlay").fadeIn(fadeLength);
+
+    var collectionPromise = $.ajax({
+            type: 'GET',
+            url: '/_collection',
+            data: {'uri': collectionID, refresh: refresh},
+        });
+
+    // Load the details when both animation and ajax call are complete
+    $.when( collectionPromise, fadePromise ).done(function (data) {
+            $("#collection-details").html(data[0]).fadeIn(fadeLength);
+            $("#tracks-spinner").fadeIn(fadeLength);
+            requestDetails();
+        });
+}
+
+function requestDetails() {
     $.ajax({
         type: 'GET',
-        url: '/_collection',
-        data: {'uri': collectionID, refresh: refresh},
+        url: '/_details',
         success: function (data) {
-            $("#collection-details").html(data).fadeIn();
-            requestDetails();
+            $("#tracks-spinner").toggle();
+            $("#collection-filters").html(data['filters_html']);
+            $("#collection-tracks").html(data['tracklist_html']);
+            loadGradients(data['gradient_colors']);
+            filtersFadeIn();
+            $("#collection-tracks").fadeIn(1000);
         }
     });
-
-
 }
 
 function selectTrack(trackID) {
@@ -379,7 +388,6 @@ function highlightSlider(slider, highlight, active) {
 
 
 function updateFilters(latestChange, explicitSort = false, sort_order = true) {
-
     // TODO: Explain the xReady flag situation nicely
     var fadeReady = false;
     var dataReady = false;
@@ -505,16 +513,12 @@ function sortTracks(criterium) {
 }
 
 function filtersFadeIn() {
-
     let $filters = $(".collection-attribute"),
         maxIndex = $filters.length,
         index = 0;
 
-
     interval = setInterval(function () {
         $filters.eq(index).fadeTo(400, 1, function () {
-
-
             // TODO: shouldn't this be done with higlight methods?
             // Show color on sliders (but only after checking they haven't already been disabled by user)
             $sliderOverlay = $(this).find(".slider-range-overlay");
@@ -549,8 +553,4 @@ function filtersFadeIn() {
         }
 
     }, 80);
-}
-
-function bgFadeIn() {
-    $("#bg-overlay").fadeOut(1000);
 }

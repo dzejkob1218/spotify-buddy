@@ -23,7 +23,6 @@ class GeniusSession:
         print(artists)
         print(f"Searching for lyrics to {name} by {artists[0]}")
 
-        raise ProxyError("err")
         try:
             page = self.connection.search_song(name, artists[0])
         except ProxyError:
