@@ -14,6 +14,8 @@ import uuid
 from babel.dates import format_datetime
 from datetime import datetime, timedelta
 from time import time
+from requests.exceptions import ProxyError
+
 
 # flask and flask_session setup
 app = Flask(__name__)
@@ -38,6 +40,7 @@ def session_cache_path():
 def check_session():
     # Gives a random ID to a new user without a session
     if not session.get('uuid'):
+        print("STARTING SESSION")
         session['uuid'] = str(uuid.uuid4())
         sp = SpotifySession(session_cache_path())
         session['sp'] = sp
@@ -404,6 +407,9 @@ def logout():
 @app.route('/_search')
 def search():
     sp = session.get('sp')
+    if not sp:
+        check_session()
+        exit()
     query = request.args.get('q', type=str)
     search_type = request.args.get('type', type=str)
     # Search spotify
@@ -442,11 +448,14 @@ def track_details():
 @app.route('/_lyrics')
 def track_lyrics():
     track = session.get('selected_track')
-    lyrics = session.get('genius').get_lyrics(track)
-    if lyrics:
-        return lyrics
-    else:
-        return "Can't find lyrics for this one"
+    # TODO: Show a link to lyrics on genius.com along with the message
+    # On pythonanywhere.com the app will be prevented from accessing the web and a ProxyError will be raised
+    try:
+        lyrics = session.get('genius').get_lyrics(track)
+    except ProxyError:
+        return render_template('components/display/lyrics_blocked.html', link=None)
+
+    return lyrics
 
 
 @app.route('/_current')
