@@ -96,6 +96,10 @@ function selectItem(itemID, itemType, refresh = false) {
 }
 
 function loadCollection(collectionID, refresh = false) {
+
+    // Hide the welcome page and don't show it again
+    $(".welcome-message").fadeOut("fast");
+
     // Keep a promise for the fade out animations and the ajax call
     // #TODO: Gather all elements that fade here into a common class
     var fadeLength = 300; // The fades need to happen at the same speed to look good
@@ -129,6 +133,7 @@ function requestDetails() {
             loadGradients(data['gradient_colors']);
             filtersFadeIn();
             $("#collection-tracks").fadeIn(1000);
+            loadPopovers();
         }
     });
 }
@@ -143,6 +148,7 @@ function selectTrack(trackID) {
             $("#selectedTrack").html(data);
             //adjustTrackDetails();
             loadQueuePopover();
+            loadPopovers();
             loadLyrics();
         }
     });
@@ -217,8 +223,6 @@ function createPlaylist(name, number, random) {
 
 
 function getFilterChange(filter) {
-
-
     // TODO: simplify to loop with dictionary
 
     if (filter.hasClass('filter-slider')) {
@@ -280,7 +284,6 @@ function getSliderChange(filter) {
     return changes;
 
 }
-
 
 function formatDuration(ms) {
     var minutes = Math.floor(ms / 60000);

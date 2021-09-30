@@ -1,1 +1,43 @@
-                <h1 class="text-center fw-bold text-white pt-4">Spotify Buddy</h1>
+<div id="welcome-page" class="welcome-message text-center h-100 overflow-auto">
+    <h2 class="text-center fw-bold text-white pt-1">Welcome</h2>
+    <h5> to the early preview of</h5>
+    <h1 class="text-center fw-bold text-white pt-1">Spotify Buddy</h1>
+
+    <div class="d-lg-none">
+        <hr class="mx-auto w-50">
+        <h5 class="pt-1">It looks like you're viewing this on a mobile device.</h5>
+        <h6>Keep in mind Spotify Buddy is in early development and it's <b>not yet optimized</b> for mobile browsers. </h6>
+        <h6>If you can, I recommend you visit this site on a larger screen.</h6>
+    </div>
+
+    <hr class="mx-auto w-50">
+    <h5 class="pt-2"> To get started, enter the name of a playlist you'd like to view in the search bar</h5>
+
+    <div class="d-flex">
+        <hr class="ms-auto" style="width: 15px">
+        <h6 class="mx-2 pt-1">or</h6>
+        <hr class="me-auto" style="width: 15px">
+    </div>
+
+    <h5 class="pt-2"> Log in with Spotify to access your library</h5>
+
+    <hr class="mx-auto w-50">
+
+    <div class="d-flex justify-content-center">
+    <h6 class="pt-2 me-2"> If you get lost, the help popups are there to explain everything </h6>
+    {% set popup_content = "Interactive tutorial (and many other features) coming soon!" %}
+    {% include 'components/decoration/help_popup.html' %}
+    </div>
+
+    <h6 class="pt-2 me-2"> You can also check out the readme on this project's <a href="https://github.com/dzejkob1218/spotify-buddy">github repo</a>. </h6>
+
+    <hr class="mx-auto w-50">
+
+    <h6 class="pt-2"> Please keep in mind that for now this app is hosted on a free server with limited computing power. </h6>
+    <h6 class="pt-1"> It <i>will</i> get hung up on large playlists. </h6>
+
+    <h6 class="pt-3"> If you'd like to use its full potential, you can easily run it locally by downloading the source code from github. </h6>
+    <h5 class="pt-2"> Enjoy!</h5>
+
+
+</div>

@@ -96,7 +96,8 @@ def view_collection():
         session['explicit_order'] = None
 
         return render_template('dynamic/collection_details.html',
-                               collection=collection.details)
+                               collection=collection.details,
+                               user=session.get('user'))
 
 
 @app.route('/refresh')
@@ -540,8 +541,12 @@ def format_attribute(value, attribute, average=False):
     Returns a human-readable string according to type of the attribute.
     If average is True, a variant for displaying the average of the attribute will be returned
     """
-    if attribute in ['number', 'release_year']:
+
+    if attribute in ['release_year']:
         return str(round(value))
+
+    if attribute == 'number':
+        return '#' + str(round(value))
 
     if attribute in ['popularity', 'dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'live', 'mood']:
         return str(round(value)) + ('%' if average else '')
