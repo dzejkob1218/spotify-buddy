@@ -391,24 +391,18 @@ function highlightSlider(slider, highlight, active) {
 
 
 function updateFilters(latestChange, explicitSort = false, sort_order = true) {
-    // TODO: Explain the xReady flag situation nicely
-    var fadeReady = false;
+    var fadePromise = false;
     var dataReady = false;
     var newList = null;
 
     // Fade the tracklist instantly to give the server some visual time to think
-    $("#collection-tracks").fadeOut("fast", function () {
-        fadeReady = true;
-        if (dataReady) {
-            $("#collection-tracks").html(newList);
-            $("#collection-tracks").fadeIn("fast");
-        }
-    });
+    var fadePromise = $("#collection-tracks").fadeOut(400).promise();
 
     let requestFilters = {};
     let changed = [];  // filters moved from min-max values by the user
     let inactive = []; // filters which haven't been touched by the user
 
+    // TODO: This should be a separate function
     // Go through all filters and check for ones with values different than defaults
     // Save relevant information on changed filters into a dictionary to be sent to the server
     $(".filter").each(function () {
@@ -439,7 +433,7 @@ function updateFilters(latestChange, explicitSort = false, sort_order = true) {
     }
 
     // Sends a query to the server to return sorted tracks, if explicitSort is true, the selected criterium will stick as the sorting key
-    $.ajax({
+    var tracksPromise = $.ajax({
         type: 'GET',
         url: '/_order',
         data: {
@@ -449,15 +443,12 @@ function updateFilters(latestChange, explicitSort = false, sort_order = true) {
                 sort_order: sort_order,
                 sort_criterium: latestChange
             })
-        },
-        success: function (data) {
-            dataReady = true;
-            newList = data;
-            if (fadeReady) {
-                $("#collectionTracks").html(data);
-                $("#collectionTracks").fadeIn("slow");
-            }
         }
+    });
+
+    $.when(tracksPromise, fadePromise).done(function(data){
+        $("#collection-tracks").html(data[0]);
+        $("#collection-tracks").fadeIn(400);
     });
 
 }
@@ -469,11 +460,11 @@ function changePage(page) {
     var newList = null;
 
     // Fade the tracklist instantly to give the server some visual time to think
-    $("#collectionTracks").stop().fadeOut("fast", function () {
+    $("#collection-tracks").stop().fadeOut("fast", function () {
         fadeReady = true;
         if (dataReady) {
-            $("#collectionTracks").html(newList);
-            $("#collectionTracks").fadeIn("fast");
+            $("#collection-tracks").html(newList);
+            $("#collection-tracks").fadeIn("fast");
         }
     });
 
@@ -485,8 +476,8 @@ function changePage(page) {
             dataReady = true;
             newList = data;
             if (fadeReady) {
-                $("#collectionTracks").html(data);
-                $("#collectionTracks").stop().fadeIn("slow");
+                $("#collection-tracks").html(data);
+                $("#collection-tracks").stop().fadeIn("slow");
             }
         }
     });
@@ -521,7 +512,7 @@ function filtersFadeIn() {
         index = 0;
 
     interval = setInterval(function () {
-        $filters.eq(index).fadeTo(400, 1, function () {
+        $filters.eq(index).fadeTo(300, 1, function () {
             // TODO: shouldn't this be done with higlight methods?
             // Show color on sliders (but only after checking they haven't already been disabled by user)
             $sliderOverlay = $(this).find(".slider-range-overlay");
