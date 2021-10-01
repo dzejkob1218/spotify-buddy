@@ -1,6 +1,8 @@
 # Spotify Buddy
 A dynamic Flask web app that connects to Spotify API to let you view metadata about songs, filter your tracks, create new playlists and more.
 
+![screenshot](screenshot.png)
+
 ## A word about the lyrics
 Spotify Buddy displays lyrics for each song selected as they appear on genius.com.
 
