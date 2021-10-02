@@ -449,6 +449,7 @@ function updateFilters(latestChange, explicitSort = false, sort_order = true) {
     $.when(tracksPromise, fadePromise).done(function(data){
         $("#collection-tracks").html(data[0]);
         $("#collection-tracks").fadeIn(400);
+        loadPopovers();
     });
 
 }

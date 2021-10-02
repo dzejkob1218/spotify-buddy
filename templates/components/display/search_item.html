@@ -1,7 +1,6 @@
 <!-- Attributes: entry[uri, name, TD(miniature), (image), (artists)], TD(button:add,remove) -->
-
-<li id="{{entry['uri']}}" class="px-0 collection-track search-result {% if not disabled %} item-enabled {% endif %} list-group-item d-flex align-items-center"
-    onmousedown="selectItem(this.id, '{{item_type}}')">
+<div id="{{entry['uri']}}" class="px-0 collection-track search-result {% if not disabled %} item-enabled {% endif %} list-group-item d-flex align-items-center"
+    onmousedown="selectItem(this.id, '{{item_type}}')" style="cursor: pointer">
 
     <!-- Miniature -->
     {% if entry['miniature'] %}
@@ -19,4 +18,4 @@
         {% endif %}
         </span>
 
-</li>
+</div>

@@ -8,14 +8,12 @@
       </div>
       <div class="modal-body">
 
-
           <label for="playNumber">Number:</label>
           <input id="playNumber" min="1" max="{{data|length}}" value="{{data|length}}" type="number">
           <input id="playRandom" type="checkbox">
           <label for="playRandom">Shuffle</label>
           <button value="queue" class="playModalButton">Queue</button>
           <button value="play" class="playModalButton">Play</button>
-
 
         <script>
           $( ".playModalButton" ).click(function(event) {
@@ -26,7 +24,6 @@
             $( "#modalPlay" ).modal('hide');
           });
         </script>
-
 
       </div>
     </div>

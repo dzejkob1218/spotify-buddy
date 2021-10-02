@@ -6,16 +6,18 @@
     background-color:  linear-gradient(90deg, rgba(148,74,255,1) 0%, rgba(43,255,169,1) 100%); !important;
 }
 
-
+.modal-header, .modal-body{
+  color: black;
+}
 
 /* --General-- */
 
 * {
-   color: white;
    font-family: Arial !important;
 }
 
 body {
+    color: white;
     height: 100vh;
     background: black;
 }
@@ -46,8 +48,13 @@ body {
     //border-radius: 10px;
 }
 
-/* --Buttons-- */
+/* --SVG Buttons-- */
+.svg-button {
+    cursor: pointer !important;
+}
 
+
+/* --Buttons-- */
 
 button {
     border: 1px solid grey;

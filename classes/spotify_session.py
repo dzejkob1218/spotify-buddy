@@ -106,6 +106,7 @@ class SpotifySession:
         for i in range(-(-total_tracks // 100)):
             response = self.connection.playlist_items(collection_uri, offset=(i * 100), limit=100)
             playlist_tracks += filter_false_tracks(response['items'])  # remove local tracks and podcasts from the result
+
         return playlist_tracks
 
     def search(self, query, search_type):

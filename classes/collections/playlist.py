@@ -11,7 +11,6 @@ class Playlist(Collection):
         self.type = 'playlist'
 
     def load_details(self):
-        print("Loading own details")
         # Load details from Spotify.playlist
         image_urls = get_img_urls(self.spotify_object, 'playlist')
         self.details = {
