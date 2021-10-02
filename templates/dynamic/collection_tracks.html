@@ -28,13 +28,14 @@
     </script>
     {% endif %}
 
+    <div class="position-absolute" style="right: 0px">
     {% set popup_content = "This is the track list. Once you select a sorting order or any filters, they appear here.
     You can click them to change the sorting. The tracks below display their attributes. At the bottom you can find the
     tracks that didn't make it through the filters. The attributes which caused the track to be excluded are highlighted
     in red. Because very large playlists slow down the site, tracks are limited to 300 per page. Above this number, a
     navigation bar will appear" %}
     {% include 'components/decoration/help_popup.html' %}
-
+        </div>
 </div>
 
 

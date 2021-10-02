@@ -54,7 +54,7 @@ def filter_false_tracks(items):
     result = []
     for item in items:
         # Filter out local tracks and items with no 'track' (they're usually podcast episodes)
-        if not item['is_local'] and 'track' in item:
+        if not item['is_local'] and item['track']['track']:
             result.append(item['track'])
     return result
 

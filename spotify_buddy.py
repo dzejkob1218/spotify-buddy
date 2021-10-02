@@ -50,7 +50,8 @@ def check_session():
 
 # Returns redirect to the last visited page
 def go_back():
-    if session.get('selected_collection'):
+    # Temporarily disabled
+    if False and session.get('selected_collection'):
         return redirect('/?collection=' + session.get('selected_collection').uri)
     else:
         return redirect('/')
@@ -145,6 +146,7 @@ def load_collection_details():
             averages[attribute] = average
 
     # Save results to session for easy pagination
+    session['collection_features'] = collection.get_track_features()
     session['latest_included_tracks'] = tracks[0]
     session['latest_rejected_tracks'] = tracks[1]
     tracklist_html = show_page()
@@ -184,7 +186,7 @@ def order_tracks():
                           'sort_order'])
 
     # Load, filter and sort tracks from the requested collection
-    tracks = session.get('selected_collection').get_track_features()
+    tracks = session.get('collection_features')
     tracks_filtered = filter_tracks(tracks[0], request_data['filters'])
 
     # Save results to session for easy pagination
@@ -231,7 +233,7 @@ def show_page():
                            current_page=page,
                            pages=get_page_bar_numbers(page, total_pages),
                            new_name=session.get('new_playlist_name'),
-                           check_failure=check_failure)
+                           check_failure=check_filter)
 
 
 def funny_playlist_name_generator(name, changes):
@@ -259,18 +261,18 @@ def funny_playlist_name_generator(name, changes):
         'mode': ['in a minor mode', 'in a major mode'],
 
         'duration': ['short', 'only long tracks'],
-        'popularity': ["only obsure tracks only I listen to", 'only stuff everybody else listens to'],
+        'popularity': ["with obscure tracks only you listen to", 'only stuff everybody else listens to'],
         'acoustic': ['only songs you can cover with your acoustic guitar at a houseparty', "it's all electric"],
         'instrumental': ["only the juicy extended instrumental sections", 'no unnecessary solos'],
         'energy': ["only downers", "only uppers"],
-
     }
 
     # if changes['explicit_sort']:
     fixes = []
 
+    # Save all texts that apply to the collection
     if changes['filters']:
-        # Iterate through texts in order to keep better sentence structure
+        # Iterate through the texts in order to keep better sentence structure
         for attribute in texts:
             if attribute in changes['filters']:
                 conditions = changes['filters'][attribute]
@@ -284,16 +286,17 @@ def funny_playlist_name_generator(name, changes):
                     else:
                         fixes.append(texts[attribute][0])
 
-        name += ', but'
-
-        if len(fixes) == 1:
-            name += ' ' + fixes[0]
-        else:
-            for fix in fixes[0:-1]:
-                if len(name) + len(fix) < 175:  # Spotify limits playlist name to 200 characters
-                    name += ' ' + fix + ','
-            name = name[:-1]
-            name += ' and ' + fixes[-1]
+        # Construct the new name
+        if fixes:
+            name += ', but'
+            if len(fixes) == 1:
+                name += ' ' + fixes[0]
+            else:
+                for fix in fixes[0:-1]:
+                    if len(name) + len(fix) < 175:  # Spotify limits playlist name to 200 characters
+                        name += ' ' + fix + ','
+                name = name[:-1]
+                name += ' and ' + fixes[-1]
 
     return name + " (by Spotify Buddy)"
 
@@ -320,25 +323,29 @@ def get_page_bar_numbers(current, total):
 # FILTERING
 def filter_tracks(tracks, filters):
     rejects = []
-    for f in filters:
-        for track in tracks:
-            if not check_failure(track[f], filters[f]) and track not in rejects:
-                rejects.append(track)
+
+    for track in tracks:
+        track['failed'] = set()
+        for f in filters:
+            if not check_filter(track[f], filters[f]):
+                track['failed'].add(f)
+                if track not in rejects:
+                    rejects.append(track)
 
     filtered = [t for t in tracks if t not in rejects]
     return filtered, rejects
 
 
-# TODO: It makes no sense for items to be filtered twice. Maybe pass failure information along with rejected tracks. AT LEAST make check_failure function do work for filter_tracks
+# TODO: It makes no sense for items to be filtered twice. Maybe pass failure information along with rejected tracks.
 # TODO: Once there is information on how to filter a given attribute, there must also be a way to append information on how to display it
-def check_failure(value, filter):
+def check_filter(value, _filter):
     """
     This function is passed to jinja as a value.
     Checks
     """
-    if ('min' in filter and value < filter['min'] or
-            'max' in filter and value > filter['max'] or
-            'switch' in filter and not value == filter['switch']):
+    if ('min' in _filter and value < _filter['min'] or
+            'max' in _filter and value > _filter['max'] or
+            'switch' in _filter and not value == _filter['switch']):
         return False
     return True
 
@@ -482,6 +489,7 @@ def create_playlist():
     random = json.loads(request.form.get('random'))
     latest_tracks = [track['uri'] for track in session.get('latest_included_tracks')[:number]]
     sp.create_playlist(name, latest_tracks)
+    return 'success', 200
 
 
 @app.route('/_play-track', methods=['POST'])
@@ -490,6 +498,7 @@ def play_track():
     queue = json.loads(request.form.get('queue'))
     uri = session.get('selected_track').uri
     sp.play([uri], queue)
+    return 'success', 200
 
 
 @app.route('/_play', methods=['POST'])
@@ -498,8 +507,8 @@ def play():
     queue, number, random = (json.loads(request.form.get(k)) for k in request.form.keys())
     latest_tracks = session.get('latest_included_tracks')[:number]
     uris = [track['uri'] for track in latest_tracks]
-
     sp.play(uris, queue)
+    return 'success', 200
 
 
 @app.template_filter()
@@ -508,6 +517,8 @@ def format_date(parent):
         return parent['release']
     if parent['release_precision'] == 'day':
         date = datetime.strptime(parent['release'], "%Y-%m-%d")
+    if parent['release_precision'] == 'month':
+        date = datetime.strptime(parent['release'], "%Y-%m")
     return format_datetime(date, format='d MMMM yyyy')
 
 

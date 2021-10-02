@@ -12,30 +12,29 @@
 
     </div>
     <!-- Collection actions -->
-    <div class="ms-auto p-3">
-        <button onclick="selectItem('{{collection['uri']}}', 'playlist', true)"> Refresh</button>
+    <div class="ms-auto p-3 d-flex">
+        
+        {% include 'components/buttons/refresh_collection.html' %}
+        
         {% if user %}
-        <button data-bs-toggle="modal" data-bs-target="#modalSave"> Save</button>
-        <button data-bs-toggle="modal" data-bs-target="#modalPlay"> Play</button>
-        {% set popup_content = "These buttons let you interact with the playlist. The 'refresh' button reloads the
-        playlist, including any changes that may have been made
-        on Spotify. The 'play' button lets you play or queue only the songs that make it through the
-        filters you've set. You can also save these songs to a new playlist with the 'save' button." %}
-        {% include 'components/decoration/help_popup.html' %}
+
+            {% include 'components/buttons/play_collection.html' %}
+            {% include 'components/buttons/save_collection.html' %}
+
+            {# Help popups #}
+            {% set popup_content = "These buttons let you interact with the playlist. The 'refresh' button reloads the
+            playlist, including any changes that may have been made
+            on Spotify. The 'play' button lets you play or queue only the songs that make it through the
+            filters you've set. You can also save these songs to a new playlist with the 'save' button." %}
+            {% include 'components/decoration/help_popup.html' %}
         {% else %}
-        {% set popup_content = "The 'refresh' button reloads the playlist, including any changes that may have been made
-        on Spotify. When you log in with Spotify, more buttons will appear, letting you create a new playlist or a queue
-        based on the filters!" %}
-        {% include 'components/decoration/help_popup.html' %}
+            {% set popup_content = "The 'refresh' button reloads the playlist, including any changes that may have been made
+            on Spotify. When you log in with Spotify, more buttons will appear, letting you create a new playlist or a queue
+            based on the filters!" %}
+            {% include 'components/decoration/help_popup.html' %}
         {% endif %}
     </div>
 </div>
-
-<script>
-    $( "#collectionDetails" ).fadeIn();
-
-
-</script>
 
 {% set label = 'collectionCover' %}
 {% set image = collection['image'] %}
