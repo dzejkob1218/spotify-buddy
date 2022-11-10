@@ -1,12 +1,17 @@
 # Spotify Buddy
+[**Preview in action!**](https://dzejkob1219.pythonanywhere.com/)
 A dynamic Flask web app that connects to Spotify API to let you view metadata about songs, filter your tracks, create new playlists and more.
 
 ![screenshot](screenshot.png)
 
+## Bugs and performance
+Spotify Buddy is a work in progress.
+Because of the great variability of content on Spotify, some playlists may still contain items that hang up the code. If the site looks stuck, try loading a different playlist. Large playlist (with thousands of songs) can take some time to load.
+
 ## A word about the lyrics
 Spotify Buddy displays lyrics for each song selected as they appear on genius.com.
 
-However, the [preview site](https://dzejkob1218.pythonanywhere.com/) is currently hosted for free, which means it has limited access to the web.
+However, the [preview site](https://dzejkob1219.pythonanywhere.com/) is currently hosted for free, which means it has limited access to the web.
 
 Unfortunately, genius.com, as well as many other lyrics sites, don't provide access to the lyrics themselves through their APIs, at least not for free, because of copyright problems.
 
