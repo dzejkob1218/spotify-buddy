@@ -1,5 +1,6 @@
 # Spotify Buddy
 [**Preview in action!**](https://dzejkob1219.pythonanywhere.com/)
+
 A dynamic Flask web app that connects to Spotify API to let you view metadata about songs, filter your tracks, create new playlists and more.
 
 ![screenshot](screenshot.png)
