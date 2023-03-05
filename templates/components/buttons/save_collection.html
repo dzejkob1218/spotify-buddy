@@ -1,3 +1,8 @@
+{% extends 'components/decoration/help_popup.html' %}
+{% set popup_title = 'Save' %}
+{% set popup_content = 'Save the filtered and sorted tracks to a new playlist in your library.' %}
+{% block content %}
 <div class="mx-1 svg-button" data-bs-toggle="modal" data-bs-target="#modalSave">
     {% include 'svg/save.svg' %}
 </div>
+{% endblock %}

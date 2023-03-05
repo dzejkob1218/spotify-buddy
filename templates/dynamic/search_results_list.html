@@ -2,7 +2,7 @@
 <ul class="list-group">
     {% for entry in data %}
 
-    {% include 'components/display/search_item.html' %}
+    {% include 'components/display/search_' + item_type + '.html' %}
 
     {% endfor %}
 </ul>

@@ -1,5 +1,5 @@
 <div class="p-2 w-100 d-flex">
-    <img src={{data['image']}} class="rounded align-self-center" data-bs-toggle="modal" data-bs-target="#trackCover"
+    <img src={{entry.album.images[-1]}} class="rounded align-self-center" data-bs-toggle="modal" data-bs-target="#trackCover"
          style="width: 150px; height: 150px;">
     <div class="px-3 align-self-start h-100  flex-grow-1 d-flex flex-column justify-content-between">
         <div class="d-flex">
@@ -10,13 +10,13 @@
             {% set popup_content = "This is the track window. You can click any track you see on the site and it will appear
             here. Click the cover art to make it fullscreen (the same can be done with the playlist image). If you're logged into Spotify, the two buttons
             on the left let you play and queue the track. Below you'll find the lyrics and details about the track." %}
-            {% include 'components/decoration/help_popup.html' %}
+            {% include 'components/decoration/help_button.html' %}
             </div>
         {% endif %}
         </div>
         <div>
-            <h4 class="fw-bold mb-1"> {{data['name']}}</h4>
-            <h5> {{data['artists']}} </h5>
+            <h4 class="fw-bold mb-1"> {{entry.name}}</h4>
+            <h5>{{entry.artists | format_artists_names}}</h5>
         </div>
     </div>
 </div>
@@ -40,6 +40,6 @@
 
 {# Modal with fullscreen cover image #}
 {% set label = 'trackCover' %}
-{% set image = data['image'] %}
+{% set image = entry.album.images[-1] %}
 {% include 'components/modals/modal_cover.html' %}
 

@@ -97,46 +97,60 @@ function selectItem(itemID, itemType, refresh = false) {
 
 function loadCollection(collectionID, refresh = false) {
 
-    // Hide the welcome page and don't show it again
+    // Hide the welcome page and don't show it again.
     $(".welcome-message").fadeOut("fast");
 
-    // Keep a promise for the fade out animations and the ajax call
+    // Keep a promise for the fade out animations and the ajax call.
     // #TODO: Gather all elements that fade here into a common class
-    var fadeLength = 300; // The fades need to happen at the same speed to look good
+    var fadeLength = 300; // The fades need to happen at the same speed to look good.
     var fadePromise = $("#collection-details").fadeOut(fadeLength).promise();
     $("#collection-tracks").fadeOut(fadeLength);
     $(".collection-attribute").fadeOut(fadeLength);
     $("#bg-overlay").fadeIn(fadeLength);
 
+    // Get the basic collection information to load instantly.
     var collectionPromise = $.ajax({
             type: 'GET',
             url: '/_collection',
             data: {'uri': collectionID, refresh: refresh},
         });
 
-    // Load the details when both animation and ajax call are complete
+    // Load the slower details when both animation and ajax call are complete.
     $.when( collectionPromise, fadePromise ).done(function (data) {
             $("#collection-details").html(data[0]).fadeIn(fadeLength);
             $("#tracks-spinner").fadeIn(fadeLength);
-            requestDetails();
+            loadCollectionDetails();
         });
 }
 
-function requestDetails() {
-    $.ajax({
+
+function loadCollectionDetails(){
+
+    var colorsPromise = $.ajax({
+        type: 'GET',
+        url: '/_gradient',
+    });
+
+    var detailsPromise = $.ajax({
         type: 'GET',
         url: '/_details',
-        success: function (data) {
-            $("#tracks-spinner").toggle();
-            $("#collection-filters").html(data['filters_html']);
-            $("#collection-tracks").html(data['tracklist_html']);
-            loadGradients(data['gradient_colors']);
-            filtersFadeIn();
-            $("#collection-tracks").fadeIn(1000);
-            loadPopovers();
-        }
     });
+
+    $.when(colorsPromise, detailsPromise).done(function (colorsData, detailsData) {
+        $("#tracks-spinner").toggle();
+        $("#collection-filters").html(detailsData[0]['filters_html']);
+        $("#collection-tracks").html(detailsData[0]['tracklist_html']);
+        filtersFadeIn();
+        $("#collection-tracks").fadeIn(1000);
+        loadPopovers();
+
+        loadGradients(colorsData[0]['gradient_colors']);
+
+    });
+
 }
+
+
 
 function selectTrack(trackID) {
     //$( "#trackDetails" ).fadeOut("fast");
@@ -291,9 +305,9 @@ function formatDuration(ms) {
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 
-function createSlider(criterium, markers = null, average = 0, min = 0, max = 100, unit = '%') {
+function createSlider(criteria, markers = null, average = 0, min = 0, max = 100, unit = '%') {
     // Create a new slider
-    let newSlider = $("#slider-" + criterium);
+    let newSlider = $("#slider-" + criteria);
     newSlider.slider({
         range: true,
         min: min,
@@ -304,8 +318,8 @@ function createSlider(criterium, markers = null, average = 0, min = 0, max = 100
             // Change values displayed on the labels when sliding
             let $labels = $(this).find($(".slider-handle-label"));
             // TODO: Take formatting duration elsewhere
-            $labels.eq(0).text(criterium == 'duration' ? formatDuration(ui.values[0]) : ui.values[0]);
-            $labels.eq(1).text(criterium == 'duration' ? formatDuration(ui.values[1]) : ui.values[1]);
+            $labels.eq(0).text(criteria == 'duration' ? formatDuration(ui.values[0]) : ui.values[0]);
+            $labels.eq(1).text(criteria == 'duration' ? formatDuration(ui.values[1]) : ui.values[1]);
         }
     });
 
@@ -317,8 +331,8 @@ function createSlider(criterium, markers = null, average = 0, min = 0, max = 100
     // Initialize values on custom handles
     let $labels = newSlider.find($(".slider-handle-label"));
     //$labels.fadeToggle();
-    $labels.eq(0).text(criterium == 'duration' ? formatDuration(min) : min);
-    $labels.eq(1).text(criterium == 'duration' ? formatDuration(max) : max);
+    $labels.eq(0).text(criteria == 'duration' ? formatDuration(min) : min);
+    $labels.eq(1).text(criteria == 'duration' ? formatDuration(max) : max);
 
     //Clone range overlay
     newSlider.find(" .ui-slider-range").prepend($(".slider-range-overlay").first().clone());
@@ -337,8 +351,8 @@ function createSlider(criterium, markers = null, average = 0, min = 0, max = 100
 
     // Add event to make an ajax query when slider is changed
     newSlider.on("slidechange", function (event) {
-        // If the slider is reset to its default state, don't send a new sorting criterium to the server
-        updateFilters(getFilterChange($(this)) ? criterium : null);
+        // If the slider is reset to its default state, don't send a new sorting criteria to the server
+        updateFilters(getFilterChange($(this)) ? criteria : null);
     });
 }
 
@@ -376,7 +390,7 @@ function highlightSwitch(filter, highlight, active) {
 }
 
 
-// TODO: why does it use 'active' class instead of fading?
+// TODO: why does this use 'active' class instead of fading?
 // Highlights or hides a slider filter with option for labels
 function highlightSlider(slider, highlight, active) {
     if (highlight) {
@@ -409,8 +423,8 @@ function updateFilters(latestChange, explicitSort = false, sort_order = true) {
         let changes = getFilterChange($(this));
         if (changes) {
             // Save the data about the slider to be sent to server
-            let criterium = $(this).attr('data-criterium');
-            requestFilters[criterium] = changes;
+            let criteria = $(this).attr('data-criteria');
+            requestFilters[criteria] = changes;
             changed.push($(this));
         } else {
             inactive.push($(this));
@@ -432,7 +446,7 @@ function updateFilters(latestChange, explicitSort = false, sort_order = true) {
         });
     }
 
-    // Sends a query to the server to return sorted tracks, if explicitSort is true, the selected criterium will stick as the sorting key
+    // Sends a query to the server to return sorted tracks, if explicitSort is true, the selected criteria will stick as the sorting key.
     var tracksPromise = $.ajax({
         type: 'GET',
         url: '/_order',
@@ -441,7 +455,7 @@ function updateFilters(latestChange, explicitSort = false, sort_order = true) {
                 filters: requestFilters,
                 explicit_sort: explicitSort,
                 sort_order: sort_order,
-                sort_criterium: latestChange
+                sort_criteria: latestChange
             })
         }
     });
@@ -485,11 +499,11 @@ function changePage(page) {
 }
 
 
-function sortTracks(criterium) {
+function sortTracks(criteria) {
     let sortOrder = true;
 
     let $allButtons = $('.collection-attribute');
-    let $button = $('#' + criterium + 'Button');
+    let $button = $('#' + criteria + 'Button');
 
     if ($button.hasClass('sort-normal')) {
         $button.removeClass('sort-normal');
@@ -497,14 +511,14 @@ function sortTracks(criterium) {
         sortOrder = false;
     } else if ($button.hasClass('sort-reverse')) {
         $button.removeClass('sort-reverse');
-        criterium = '';
+        criteria = '';
     } else {
         $allButtons.removeClass("sort-normal");
         $allButtons.removeClass("sort-reverse");
         $button.addClass("sort-normal");
     }
 
-    updateFilters(criterium, true, sortOrder);
+    updateFilters(criteria, true, sortOrder);
 }
 
 function filtersFadeIn() {

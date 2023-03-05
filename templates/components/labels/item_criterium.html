@@ -1,4 +1,0 @@
-{% set text_color = 'text-danger' if disabled and criterium in entry['failed'] else 'text-white' %}
-<span class="fw-bold {{text_color}} text-center">
-      {{entry[criterium]|format_attribute(criterium)}}
-</span>

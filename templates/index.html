@@ -18,7 +18,7 @@
     <link href="../static/css/styles.css" rel="stylesheet">
     <script src="../static/js/scripts.js"></script>
     <script src="../static/js/triggers_scripts.js"></script>
-    {% if False %}
+    {% if user %}
     <script src="../static/js/auth_scripts.js"></script>
     {% endif %}
 
@@ -53,16 +53,13 @@
             {% include 'frames/search.html' %}
             <div id="selectedTrack" class="flex-grow-1 d-flex flex-column overflow-hidden mt-2">
                 <!-- Part of the welcome message, it will be replaced once a track is loaded -->
-                <div class="text-center p-2 mx-auto" style="max-width: 75%; margin-top: 35px; border: white 1px dashed">
-                    <h5> Here you can see the details of any <b>track</b> you select </h5>
-                </div>
+                        {% include 'welcome_page.html' %}
+
             </div>
-            {# Include logout link at the bottom #}
         </div>
     </div>
 
     <div class="column col-lg-6 px-2 pt-1">
-        {% include 'welcome_page.html' %}
 
         <div id="collection-details" class="h-25" style="display:none">
             {# Placeholder for collection details #}
@@ -81,10 +78,7 @@
     <div class="column col-lg-3">
         <div id="collection-filters" class="side-column h-100 d-flex flex-column flex-fill">
             {# Placeholder for collection filters #}
-             <!-- Part of the welcome message, it will be replaced once a collection is loaded -->
-            <div class="text-center welcome-message p-2 mx-auto" style="max-width: 75%; margin-top: 145px; border: white 1px dashed">
-                <h5> This section is for the <b>filters</b>. They let you manipulate the playlists you load.</h5>
-            </div>
+
         </div>
     </div>
 </div>

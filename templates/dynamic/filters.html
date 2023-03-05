@@ -27,8 +27,8 @@
 <div style="overflow-y: scroll;">
     <div class="d-flex collection-attribute px-4" style="display: none">
         <h3 class="fw-bold pb-1 m-0 me-auto">Filters</h3>
-        {% set popup_content = "Here are all of the attributes a song can have on Spotify. The number you see on the right is the average value for a song in the playlist. Click an attribute to sort the tracklist by it. Slide the numbers on the ends of the bar to filter the playlist, limiting it to songs within the brackets that you set." %}
-        {% include 'components/decoration/help_popup.html' %}
+        {% set popup_content = "Here you can sort and filter the playlist. All the values you see come from Spotify, but can't be accessed in their app. The numbers next to each value are the average for all tracks in the playlist. Click a value to sort the tracks and use the sliders to filter." %}
+        {% include 'components/decoration/help_button.html' %}
     </div>
     {# Filters #}
     {% for attribute in averages %}

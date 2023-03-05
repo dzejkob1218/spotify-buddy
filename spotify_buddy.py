@@ -1,13 +1,11 @@
+import typing
 import os
+import random
 import json
 from flask import Flask, session, request, redirect, render_template, jsonify, url_for
-from classes.spotify_session import SpotifySession
-from classes.genius_session import GeniusSession
-from classes.collections.playlist import Playlist
-from classes.collections.track import Track
+from spotifytools import SpotifySession, GeniusSession, Playlist, Track, Collection
 # from classes.collections.collection import Collection
 from flask_session import Session
-from helpers.parser import parse_item
 from helpers.colors import gradient_from_url, DEFAULT_COLORS
 from helpers.printing import show
 import uuid
@@ -48,8 +46,8 @@ def check_session():
         session['banned_songs'] = []
 
 
-# Returns redirect to the last visited page
 def go_back():
+    """Returns redirect to the last visited page."""
     # Temporarily disabled
     if False and session.get('selected_collection'):
         return redirect('/?collection=' + session.get('selected_collection').uri)
@@ -57,15 +55,15 @@ def go_back():
         return redirect('/')
 
 
-# default route
 @app.route('/')
 def index():
-    check_session()
-    # If a collection is specified (for example when being redirected back) it will be requested when the page loads
-    request_collection = request.args.get('collection')
-    # f = open("templates/rendered_file.html", "w")
-    # f.write(render_template('index.html', data=data))
+    """
+    Default route.
 
+    If a collection is specified (for example when being redirected back) it will be requested when the page loads
+    """
+    check_session()
+    request_collection = request.args.get('collection')
     return render_template('index.html', user=session.get('user'), collection=request_collection)
 
 
@@ -77,40 +75,41 @@ def view_collection():
     sp = session.get('sp')
     requested_uri = request.args.get('uri', type=str)
     refresh = json.loads(request.args.get('refresh'))
-    collection = None
     previously_selected = session.get('selected_collection')
 
     if not refresh and previously_selected and (previously_selected.uri == requested_uri or not requested_uri):
+        # No change in selected collection.
         collection = previously_selected
     elif requested_uri:
-        # Load a new collection object (for now only playlists are supported)
-        collection = Playlist(requested_uri, sp)
+        # Load a new collection object (for now only playlists are supported).
+        collection = sp.fetch_item(requested_uri)
         session['selected_collection'] = collection
     else:
+        # Return welcome page in case of no collection.
         return render_template('welcome_page.html')
 
     if collection:
         # Initialize criteria stack
-        session['new_playlist_name'] = collection.details['name'] + " (by SpotifyBuddy)"
+        session['new_playlist_name'] = collection.name + " (by SpotifyBuddy)"
         session['filters_stack'] = []
-        session['sort_criterium'] = None
+        session['sort_criteria'] = None
         session['explicit_order'] = None
 
         return render_template('dynamic/collection_details.html',
-                               collection=collection.details,
+                               collection=collection,
                                user=session.get('user'))
 
 
 @app.route('/refresh')
 def refresh_collection():
     """
-    Loads currently selected collection again
+    Reloads currently selected collection.
     """
     selected = session.get('selected_collection')
     if not selected:
         return redirect('/')
     else:
-        # Remove the collection from session and make it load again
+        # Remove the collection from session and make it load again.
         selected_uri = selected.uri
         session['selected_collection'] = None
         return redirect(url_for('view_collection', uri=selected_uri))
@@ -119,41 +118,66 @@ def refresh_collection():
 @app.route('/_details')
 def load_collection_details():
     """
-    The function that loads the initial tracklist, filters and background gradient
+    Loads the initial tracklist and filters.
     """
-    sp = session.get('sp')
-    collection = session.get('selected_collection')
+    sp: SpotifySession = session.get('sp')
+    collection: Collection = session.get('selected_collection')
 
-    if not collection.details['total']:
+    if not collection.total_tracks:
         return "Collection empty - nothing to load", 400
 
-    collection.request_children()
-    tracks = collection.get_track_features()
+    # Load collection features.
+    tracks = collection.get_tracks()
+    collection.get_features()
 
-    # Try to make a gradient from collection image and use default colors if something goes wrong
-    try:
-        gradient_colors = gradient_from_url(collection.details['image'])
-    except:
-        gradient_colors = DEFAULT_COLORS
+    feature_stats, uniform_features = {}, {}
+    for attribute in collection.features:
+        # Get min, max and average values for all features.
+        average = collection.features[attribute]
+        minimum = min([track.details[attribute] for track in tracks if attribute in track.details])
+        maximum = max([track.details[attribute] for track in tracks if attribute in track.details])
+        stats = {'avg': average, 'min': minimum, 'max': maximum}
 
-    # Sort out attributes which have one value for all songs
-    averages, invalid_averages = {}, {}
-    for attribute in collection.averages:
-        average = collection.averages[attribute]
-        if average['max'] == average['min']:
-            invalid_averages[attribute] = average
+        # Sort out attributes which have the same value for all songs.
+        if format_attribute_value(maximum, attribute) == format_attribute_value(minimum, attribute):
+            uniform_features[attribute] = stats
         else:
-            averages[attribute] = average
+            feature_stats[attribute] = stats
 
-    # Save results to session for easy pagination
-    session['collection_features'] = collection.get_track_features()
-    session['latest_included_tracks'] = tracks[0]
-    session['latest_rejected_tracks'] = tracks[1]
+    # Separate tracks into those with and without audio features.
+    features, no_features = [], []
+    for track in tracks:
+        if track.features:
+            features.append(track)
+        else:
+            no_features.append(track)
+
+    # Save results to session for easy pagination.
+    # TODO: What is this and where is it used
+    session['collection_tracks_features'] = features
+    session['collection_tracks_nofeatures'] = no_features
+    session['latest_included_tracks'] = features
+    session['latest_rejected_tracks'] = no_features
+
+    # Load the first page to display based on tracks cached above.
     tracklist_html = show_page()
 
-    filters_html = render_template('dynamic/filters.html', averages=averages, invalid=invalid_averages)
+    # Load the filters bar.
+    filters_html = render_template('dynamic/filters.html', averages=feature_stats, invalid=uniform_features)
 
-    return {'gradient_colors': gradient_colors, 'filters_html': filters_html, 'tracklist_html': tracklist_html}
+    return {'filters_html': filters_html, 'tracklist_html': tracklist_html}
+
+
+@app.route('/_gradient')
+def collection_gradient():
+    """Try to make a gradient from the collection image and use default colors if something goes wrong."""
+    collection = session.get('selected_collection')
+    try:
+        gradient_colors = gradient_from_url(collection.images[0])
+    # TODO: Make this less general
+    except:
+        gradient_colors = DEFAULT_COLORS
+    return {'gradient_colors': gradient_colors}
 
 
 @app.route('/_order')
@@ -162,45 +186,47 @@ def order_tracks():
     This route should also be the one that loads the tracks the first time
     TODO: Describe here what exactly happens with filtering and sorting if specified in the request
     """
-    sp = session.get('sp')
     request_data = json.loads(request.args.get('sorting_details'))
-
-    session['new_playlist_name'] = funny_playlist_name_generator(session.get('selected_collection').details['name'],
+    filters = adapt_filters(request_data['filters'])
+    # TODO: Why this here?
+    session['new_playlist_name'] = funny_playlist_name_generator(session.get('selected_collection').name,
                                                                  request_data)
 
-    # Set the received criterium as either the sorting criterium or a new filter
+    # Set the received criteria as either the sorting criteria or a new filter.
     if request_data['explicit_sort']:
-        session['sort_criterium'] = request_data['sort_criterium']
+        session['sort_criteria'] = request_data['sort_criteria']
         session['explicit_order'] = request_data['sort_order']
     else:
-        update_filter_stack(request_data['sort_criterium'], request_data['filters'])
+        update_filter_stack(request_data['sort_criteria'], filters)
 
-    # The 'stack' are names of sorting criteria in order of most recently used
+    # Names of sorting criteria in order of most recently used.
     stack = get_latest_stack()
 
     # The sorting function used for tracks
     def sorter(t):
-        # Name is used when there is no other criterium to sort by, if there is one, name is still the secondary key
-        return sorted(t, key=lambda k: (k[stack[0]], k['name']) if stack else k['name'],
-                      reverse=session.get('explicit_order') if session.get('sort_criterium') else request_data[
+        # Name is used when there is no other criteria to sort by, if there is one, name is the secondary key.
+        return sorted(t, key=lambda k: (k.details[stack[0]], k.name) if stack else k.name,
+                      reverse=session.get('explicit_order') if session.get('sort_criteria') else request_data[
                           'sort_order'])
 
     # Load, filter and sort tracks from the requested collection
-    tracks = session.get('collection_features')
-    tracks_filtered = filter_tracks(tracks[0], request_data['filters'])
+    tracks_features = session.get('collection_tracks_features')
+    tracks_filtered = filter_tracks(tracks_features, filters)
 
     # Save results to session for easy pagination
     session['latest_included_tracks'] = sorter(tracks_filtered[0])
-    session['latest_rejected_tracks'] = sorter(tracks_filtered[1] + tracks[1])
+    session['latest_rejected_tracks'] = sorter(tracks_filtered[1] + session.get('collection_tracks_nofeatures'))
 
     return show_page()
 
 
 @app.route('/_page')
 def show_page():
+    """Loads a page of displayed items."""
     page = 0
     page_len = 300
 
+    # Apply pagination if requested.
     if request.args.get('page'):
         page = int(request.args.get('page'))
 
@@ -210,12 +236,12 @@ def show_page():
     total_tracks = len(all_included) + len(all_excluded)
     total_pages = -(-total_tracks // page_len)
 
-    # Get the included data that should be displayed on page
+    # Get the included data that should be displayed on page.
     included_page = all_included[(page * page_len): (page * page_len) + page_len]
     excluded_page = []
 
+    # If there is space left on a page of included tracks, fill it with rejected tracks.
     remaining_space = page_len - len(included_page)
-    # If there is space left on the page, fill it with rejected tracks
     if remaining_space and not remaining_space == page_len and len(all_excluded) > 0:
         excluded_page = all_excluded[0: remaining_space]
     elif remaining_space == page_len:
@@ -228,7 +254,7 @@ def show_page():
                            data=included_page,
                            disabled_data=excluded_page,
                            criteria_stack=get_latest_stack(),
-                           explicit_sort=True if session.get('sort_criterium') else False,
+                           explicit_sort=True if session.get('sort_criteria') else False,
                            included_number=len(all_included),
                            current_page=page,
                            pages=get_page_bar_numbers(page, total_pages),
@@ -306,7 +332,7 @@ def get_page_bar_numbers(current, total):
     Returns up to five numbers which will be used in the page bar.
     First page is always page 0 and last is always last.
     If current page is 1 and there are more than five, pages should be 0,1,2,3,last
-    Similarly, if current page is the penultimate: 0, -3, -2, -1, last
+    Similarly, if current page is the penultimate; 0, -3, -2, -1, last
     In any other case: 0, cur-1, cur, cur+1, last
     """
     # If there are five or less simply number them.
@@ -325,16 +351,25 @@ def filter_tracks(tracks, filters):
     rejects = []
 
     for track in tracks:
-        track['failed'] = set()
+        track.failed = set()
         for f in filters:
-            if not check_filter(track[f], filters[f]):
-                track['failed'].add(f)
+            if not check_filter(track.details[f], filters[f]):
+                track.failed.add(f)
                 if track not in rejects:
                     rejects.append(track)
 
     filtered = [t for t in tracks if t not in rejects]
     return filtered, rejects
 
+
+def adapt_filters(filters):
+    """Adjusts filter values from how they are displayed on the page to backend format."""
+    # TODO: Export information about displaying these values to a single place for all related functions to use.
+    for attribute in filters:
+        if attribute in ['dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'valence']:
+            for m in filters[attribute]:
+                filters[attribute][m] /= 100
+    return filters
 
 # TODO: It makes no sense for items to be filtered twice. Maybe pass failure information along with rejected tracks.
 # TODO: Once there is information on how to filter a given attribute, there must also be a way to append information on how to display it
@@ -352,27 +387,27 @@ def check_filter(value, _filter):
 
 # The filters stack keeps track of the order in which filter requests came in.
 # It keeps up the cool effect of sorting by the latest active filter
-def update_filter_stack(new_criterium, active_filters):
+def update_filter_stack(new_criteria, active_filters):
     stack = session.get('filters_stack')
     # Remove criteria which are no longer used as filters
-    for criterium in stack:
-        if criterium not in active_filters:
-            stack.remove(criterium)
-    # If the new criterium is valid, move it to front
-    if new_criterium:
-        if new_criterium in stack:
-            stack.remove(new_criterium)
-        stack.insert(0, new_criterium)
+    for criteria in stack:
+        if criteria not in active_filters:
+            stack.remove(criteria)
+    # If the new criterion is valid, move it to front
+    if new_criteria:
+        if new_criteria in stack:
+            stack.remove(new_criteria)
+        stack.insert(0, new_criteria)
 
 
 def get_latest_stack():
-    # The final stack is the result of pushing the explicit criterium to front of stack
+    # The final stack is the result of pushing the explicit criterion to front of stack
     stack = list(session.get('filters_stack'))  # Make a copy of filters stack
-    explicit_criterium = session.get('sort_criterium')
-    if explicit_criterium:
-        if explicit_criterium in stack:
-            stack.remove(explicit_criterium)
-        stack.insert(0, explicit_criterium)
+    explicit_criteria = session.get('sort_criteria')
+    if explicit_criteria:
+        if explicit_criteria in stack:
+            stack.remove(explicit_criteria)
+        stack.insert(0, explicit_criteria)
     return stack
 
 
@@ -411,8 +446,6 @@ def logout():
 
 
 # AJAX
-
-
 @app.route('/_search')
 def search():
     sp = session.get('sp')
@@ -423,35 +456,26 @@ def search():
     search_type = request.args.get('type', type=str)
     # Search spotify
     if search_type in ['playlist', 'track'] and query:
-        search_results = sp.search(query, search_type)['items']
-        parsed_results = [parse_item(item, search_type) for item in search_results]
+        search_results = sp.search(query, search_type)[search_type]
     # Get user playlists and match names for the query
-    if search_type == 'library' and sp.authorized:
-        results = sp.fetch_user_playlists()
-        parsed_results = [parse_item(item, 'playlist') for item in results]
+    elif search_type == 'library' and sp.authorized:
+        search_results = sp.fetch_user_playlists(sp.connected_user)
         if query:
-            parsed_results = [p for p in parsed_results if query.lower() in p['name'].lower()]
+            search_results = [p for p in search_results if query.lower() in p.name.lower()]
         search_type = 'playlist'
-    return render_template('dynamic/search_results_list.html', data=parsed_results, item_type=search_type)
+    return render_template('dynamic/search_results_list.html', data=search_results, item_type=search_type)
 
 
 @app.route('/_track')
 def track_details():
-    sp = session.get('sp')
+    sp: SpotifySession = session.get('sp')
     uri = request.args.get('uri', type=str)
-    track = None
-    # check if the track is already loaded in the selected collection
-    if session.get('selected_collection'):
-        track = session.get('selected_collection').find_uri(uri)
-    # if not, load a new one
-    if not track:
-        track = Track(uri, sp)
+    track = sp.fetch_item(uri)
     session['selected_track'] = track
     return render_template('dynamic/track.html',
-                           data=track.details,
-                           parent=track.parent,
+                           entry=track,
                            auth=sp.authorized,
-                           has_features=True if track.audio_features else False)
+                           has_features=bool(track.features))
 
 
 @app.route('/_lyrics')
@@ -471,11 +495,12 @@ def track_lyrics():
 def currently_playing():
     sp = session.get('sp')
     current = sp.fetch_currently_playing()
+    sp.load(current, details=True, features=True)
     if current:  # and current['context'] and current['context']['type'] == 'playlist':
         # collection = sp.fetch_item(current['context']['uri'])
         # parsed_collection = parse_item(collection, 'playlist')
         return render_template('dynamic/currently_playing.html',
-                               track=parse_item(current['item'], 'track'))  # ,collection=collection)
+                               track=current)  # ,collection=collection)
     else:
         return 'Nothing playing'
 
@@ -486,9 +511,11 @@ def create_playlist():
     sp = session.get('sp')
     name = request.form.get('name')
     number = json.loads(request.form.get('number'))
-    random = json.loads(request.form.get('random'))
-    latest_tracks = [track['uri'] for track in session.get('latest_included_tracks')[:number]]
-    sp.create_playlist(name, latest_tracks)
+    shuffle = json.loads(request.form.get('random'))
+    latest_tracks = session.get('latest_included_tracks')
+    if shuffle:
+        random.shuffle(latest_tracks)
+    sp.create_playlist(name, latest_tracks[:number])
     return 'success', 200
 
 
@@ -496,29 +523,44 @@ def create_playlist():
 def play_track():
     sp = session.get('sp')
     queue = json.loads(request.form.get('queue'))
-    uri = session.get('selected_track').uri
-    sp.play([uri], queue)
+    track = session.get('selected_track')
+    if queue:
+        sp.queue([track])
+    else:
+        sp.play([track])
     return 'success', 200
 
 
 @app.route('/_play', methods=['POST'])
 def play():
+    # TODO: Add an option to play a collection as a whole instead of just its tracks.
     sp = session.get('sp')
-    queue, number, random = (json.loads(request.form.get(k)) for k in request.form.keys())
+    queue, number, shuffle = (json.loads(request.form.get(k)) for k in request.form.keys())
     latest_tracks = session.get('latest_included_tracks')[:number]
-    uris = [track['uri'] for track in latest_tracks]
-    sp.play(uris, queue)
+    if shuffle:
+        random.shuffle(latest_tracks)
+    if queue:
+        sp.queue(latest_tracks)
+    else:
+        sp.play(latest_tracks)
     return 'success', 200
 
 
 @app.template_filter()
-def format_date(parent):
-    if parent['release_precision'] == 'year':
-        return parent['release']
-    if parent['release_precision'] == 'day':
-        date = datetime.strptime(parent['release'], "%Y-%m-%d")
-    if parent['release_precision'] == 'month':
-        date = datetime.strptime(parent['release'], "%Y-%m")
+def format_artists_names(artists):
+    return ", ".join([artist.name for artist in artists])
+
+
+@app.template_filter()
+def format_date(album):
+    return album.release_date
+    # TODO: TEMP
+    if album.release_date_precision == 'year':
+        return album.release_date
+    if album.release_date_precision == 'month':
+        date = datetime.strptime(album.release_date, "%Y-%m")
+    if album.release_date_precision == 'day':
+        date = datetime.strptime(album.release_date, "%Y-%m-%d")
     return format_datetime(date, format='d MMMM yyyy')
 
 
@@ -534,7 +576,6 @@ def format_duration(ms):
 def fraction_to_decimal(val):
     return int(round(val * 100))
 
-
 @app.template_filter()
 def limit_length(text, max_len):
     if len(text) < max_len:
@@ -544,7 +585,25 @@ def limit_length(text, max_len):
 
 @app.template_filter()
 def format_attribute_name(name):
+    aliases = {
+        'valence': 'mood',
+        'dance': 'danceability',
+    }
+    if name in aliases:
+        name = aliases[name]
     return name.replace('_', ' ').title()
+
+
+@app.template_filter()
+def format_attribute_value(value, attribute):
+    if attribute in ['dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'valence']:
+        return round(value * 100)
+
+    if attribute in ['explicit, tempo']:
+        return round(value)
+
+    else:
+        return value
 
 @app.template_filter()
 def format_attribute(value, attribute, average=False):
@@ -553,14 +612,14 @@ def format_attribute(value, attribute, average=False):
     If average is True, a variant for displaying the average of the attribute will be returned
     """
 
-    if attribute in ['release_year']:
+    if attribute in ['popularity', 'release_year']:
         return str(round(value))
 
-    if attribute == 'number':
+    if attribute == 'track_number':
         return '#' + str(round(value))
 
-    if attribute in ['popularity', 'dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'live', 'mood']:
-        return str(round(value)) + ('%' if average else '')
+    if attribute in ['dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'valence']:
+        return str(round(value * 100)) + ('%' if average else '')
 
     if attribute == 'tempo':
         return str(round(value)) + (' BPM' if average else '')

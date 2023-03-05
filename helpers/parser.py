@@ -7,17 +7,6 @@ def uri_to_url(uri):
         return fields[1] + 's/' + fields[2]
 
 
-def parse_item(item, item_type):
-    result = {
-        'miniature': get_img_urls(item, item_type)[0] if get_img_urls(item, item_type) else None,
-        'name': item['name'],
-        'uri': item['uri']
-    }
-    if 'artists' in item:
-        result['artists'] = parse_artists(item['artists'])
-    return result
-
-
 # Takes a list of artists and return a nice, comma separated, string, of their, names
 def parse_artists(artists):
     result = ''

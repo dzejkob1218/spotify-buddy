@@ -9,7 +9,7 @@
     {% endif %}
     <!-- Sort criteria -->
     <div class="ms-2 flex-shrink-0 d-flex justify-content-around w-50 me-5">
-        {% for criterium in criteria_stack[:3] %}
+        {% for criteria in criteria_stack[:3] %}
         {% set criteria_index = loop.index %}
         {% include 'components/labels/sorting_label.html' %}
         {% endfor %}
@@ -29,12 +29,8 @@
     {% endif %}
 
     <div class="position-absolute" style="right: 0px">
-    {% set popup_content = "This is the track list. Once you select a sorting order or any filters, they appear here.
-    You can click them to change the sorting. The tracks below display their attributes. At the bottom you can find the
-    tracks that didn't make it through the filters. The attributes which caused the track to be excluded are highlighted
-    in red. Because very large playlists slow down the site, tracks are limited to 300 per page. Above this number, a
-    navigation bar will appear" %}
-    {% include 'components/decoration/help_popup.html' %}
+    {% set popup_content = "Tracks here will display in order you select. Tracks that don't make it through the filters are always at the bottom. Any actions like playing or saving the tracks will only include the rest. Click a track to see its details." %}
+    {% include 'components/decoration/help_button.html' %}
         </div>
 </div>
 
@@ -74,3 +70,4 @@
 attempting to play or save tracks that haven't finished loading #}
 {% include 'components/modals/modal_save.html' %}
 {% include 'components/modals/modal_play.html' %}
+{% include 'components/modals/modal_discover.html' %}

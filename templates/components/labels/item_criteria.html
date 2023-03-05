@@ -1,0 +1,4 @@
+{% set text_color = 'text-danger' if disabled and criteria in entry['failed'] else 'text-white' %}
+<span class="fw-bold {{text_color}} text-center">
+      {{entry.details[criteria]|format_attribute(criteria)}}
+</span>

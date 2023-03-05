@@ -1,13 +1,13 @@
 <!-- A filter has - attribute, max and min values, unit -->
 <div style="padding: 8px 48px 12px 36px" >
-    <div class="filter filter-slider"  data-criterium="{{attribute}}" id="slider-{{attribute}}"></div>
+    <div class="filter filter-slider"  data-criteria="{{attribute}}" id="slider-{{attribute}}"></div>
 
     <script>
 
-    var markers = [{{averages[attribute]['avg']}}];
-    var average = {{averages[attribute]['avg']}};
-    var min = {{averages[attribute]['min']}};
-    var max = {{averages[attribute]['max']}};
+    var markers = [{{averages[attribute]['avg'] | format_attribute_value(attribute) }}];
+    var average = {{averages[attribute]['avg'] | format_attribute_value(attribute)}};
+    var min = {{averages[attribute]['min'] | format_attribute_value(attribute)}};
+    var max = {{averages[attribute]['max'] | format_attribute_value(attribute)}};
     createSlider('{{attribute}}', markers, average, min, max);
 
     </script>
