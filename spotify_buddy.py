@@ -13,6 +13,7 @@ from babel.dates import format_datetime
 from datetime import datetime, timedelta
 from time import time
 from requests.exceptions import ProxyError
+from spotifydiscover import Discover
 
 # flask and flask_session setup
 app = Flask(__name__)
@@ -189,8 +190,8 @@ def order_tracks():
     request_data = json.loads(request.args.get('sorting_details'))
     filters = adapt_filters(request_data['filters'])
     # TODO: Why this here?
-    session['new_playlist_name'] = funny_playlist_name_generator(session.get('selected_collection').name,
-                                                                 request_data)
+    session['new_playlist_name'] = playlist_name_generator(session.get('selected_collection').name,
+                                                           request_data)
 
     # Set the received criteria as either the sorting criteria or a new filter.
     if request_data['explicit_sort']:
@@ -262,34 +263,35 @@ def show_page():
                            check_failure=check_filter)
 
 
-def funny_playlist_name_generator(name, changes):
+def playlist_name_generator(name, changes):
     """
-    Generates a playlist name based on applied filters like this:
-    playlist_name but ... (by Spotify Buddy)
+    Generates a playlist name based on applied filters.
+
+    Returns 'playlist_name but ... (by Spotify Buddy)'
     """
 
     #  The strings to add to the name of a  new playlist.
     #  The order is important to preserve the structure of the new sentence.
     texts = {
 
-        'number': ["it's all off the tops of the tracklists", "it's all from way down the tracklist"],
-        'live': ["it's the best version because it's the studio version", 'it sounds just like live'],
+        'number': ["only tops of the tracklists", "it's all from way down the tracklist"],
+        'live': ['studio', "live"],
 
         'explicit': ['squeaky clean', 'only songs with bad no-no words in them'],
 
-        'tempo': ['slow', ' f a s t '],
+        'tempo': ['slow', 'fast'],
         'release_year': ['old', 'fresh'],
-        'mood': ['serious', "more up-beat"],
+        'valence': ['serious', "more up-beat"],
 
         'signature': ['in wacky time signatures', 'in standard time signature'],
         'dance': ['impossible to dance to', 'only tracks you can dance to'],
-        'speech': ['with no talking', 'with a lot said'],
-        'mode': ['in a minor mode', 'in a major mode'],
+        'speech': ['with no talking', 'with more words'],
+        'mode': ['in minor', 'in major'],
 
         'duration': ['short', 'only long tracks'],
-        'popularity': ["with obscure tracks only you listen to", 'only stuff everybody else listens to'],
-        'acoustic': ['only songs you can cover with your acoustic guitar at a houseparty', "it's all electric"],
-        'instrumental': ["only the juicy extended instrumental sections", 'no unnecessary solos'],
+        'popularity': ["just obscure tracks only you listen to", 'only stuff everybody else listens to'],
+        'acoustic': ["it's all electric", 'only songs you can cover with your acoustic guitar at a houseparty'],
+        'instrumental': ['no instrumentals', "instrumental"],
         'energy': ["only downers", "only uppers"],
     }
 
@@ -546,6 +548,18 @@ def play():
     return 'success', 200
 
 
+@app.route('/_discover', methods=['POST'])
+def discover():
+    sp = session.get('sp')
+    disc = Discover(sp, quick=True)
+
+    name = request.form.get('name')
+    number = int(request.form.get('number'))
+    latest_tracks = session.get('latest_included_tracks')
+    disc.extend(latest_tracks, number, name)
+    return 'success', 200
+
+
 @app.template_filter()
 def format_artists_names(artists):
     return ", ".join([artist.name for artist in artists])
@@ -645,7 +659,6 @@ def format_attribute(value, attribute, average=False):
 
     if attribute == 'signature':
         return str(round(value, 2 if average else 0)) + '/4'
-
 
 """
 

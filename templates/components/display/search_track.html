@@ -3,9 +3,7 @@
     onmousedown="selectItem(this.id, '{{item_type}}')" style="cursor: pointer">
 
     <!-- Miniature -->
-    {% if entry.album.images[0] %}
     <img class="ms-2" src="{{entry.album.images[0]}}" alt="{{ entry.name }} image" width="50" height="50">
-    {% endif %}
 
     <!-- Name and artist -->
     <span class="px-2 overflow-hidden text-nowrap text-white">

@@ -3,12 +3,13 @@
     onmousedown="selectItem(this.id, '{{item_type}}')" style="cursor: pointer">
 
     <!-- Miniature -->
-    {% if entry.images[0] %}
-    <img class="ms-2" src="{{entry.images[0]}}" alt="{{ entry.name }} image" width="50" height="50">
-    {% endif %}
-
+    <div style="width: 50px; height: 50px;">
+        {% if entry.images %}
+        <img class="ms-2" src="{{entry.images[0]}}" alt="{{ entry.name }} image" width="50" height="50">
+        {% endif %}
+    </div>
     <!-- Name and artist -->
-    <span class="px-2 overflow-hidden text-nowrap text-white">
+    <span class="px-3 overflow-hidden text-nowrap text-white">
         <span class="fw-bold">
         {{ entry.name | limit_length(40) }}
         </span>

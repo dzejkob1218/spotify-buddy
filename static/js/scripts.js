@@ -5,7 +5,7 @@ $(document).ready(function() {
 
 function toggleSearchType($selected) {
     $selected.toggleClass(["search-type", "search-type-active"]);
-    $selected.prop('disabled', function (i, v) { // TODO: what the fuck is this
+    $selected.prop('disabled', function (i, v) { // TODO: what is this
         return !v;
     });
 }
@@ -233,6 +233,17 @@ function createPlaylist(name, number, random) {
         url: '/_create'
     });
 
+}
+
+function discover(name, number) {
+        $.ajax({
+        type: 'POST',
+        data: {
+            name: name,
+            number: number,
+        },
+        url: '/_discover'
+    });
 }
 
 

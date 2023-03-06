@@ -3,15 +3,64 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Discover more</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Discover</h5>
           <div class="d-flex justify-content-between">
-            {% set popup_content = "This will load a new collection of tracks based on what's already selected. The tracks will come from artists already present in the playlist and others related to them. The more tracks an artist has in the playlist, the more they will contribute." %}
+            {% set popup_content = "This will create a new playlist in your library based on the tracks you selected. The tracks will come from the artists present in the playlist and other artists related to them. The more tracks an artist has in the playlist, the more they will contribute." %}
             {% include 'components/decoration/help_button.html' %}
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
       </div>
       <div class="modal-body">
-            <h6>This can take a lot of time for large playlists.</h6>
+
+        <label for="discoverName">Playlist name:</label>
+        <textarea rows=2 cols=50 id="discoverName">{{'Discover ' + new_name}}</textarea>
+
+        <label for="discoverNumber">New playlist size:</label>
+        <input id="discoverNumber" min="{{data|length}}" max="{{data|length * 5}}" value="{{data|length * 2}}" type="number">
+
+        <button id="discoverModalButton" class="p-1">Create playlist</button>
+
+        <p id="softWarning" style="color: orange; display: none;">Making the new playlist much larger than the source will make it less accurate.</p>
+        <p id="hardWarning" style="color: red; display: none;">Max size is five times the source ({{data|length * 5}}).</p>
+
+        <script>
+          $( "#discoverNumber" ).change(function(event){
+            var number = $( this ).val();
+
+            if (number > {{data|length * 5}}) {
+                $( "#discoverModalButton" ).hide();
+                $( "#softWarning" ).hide();
+                $( "#hardWarning" ).show();
+            }
+            else if (number >= {{data|length * 3}}) {
+                $( "#hardWarning" ).hide();
+                $( "#softWarning" ).show();
+                $( "#discoverModalButton" ).show();
+            }
+            else {
+                $( "#softWarning" ).hide();
+                $( "#hardWarning" ).hide();
+                $( "#discoverModalButton" ).show();
+            }
+
+          });
+
+          $( "#discoverModalButton" ).click(function(event) {
+            var name = $( "#discoverName" ).val();
+            var number = $( "#discoverNumber" ).val();
+            discover(name, number);
+            $( "#modalDiscover" ).modal('hide');
+          });
+        </script>
+
+
+        <div class="p-2">
+          {% if data|length > 300 %}
+            <h6 class="text-danger">Large playlists can take a long time to process. Consider filtering out some tracks.</h6>
+          {% else %}
+            <h6>This can take up to a few minutes.</h6>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
