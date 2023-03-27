@@ -1,8 +1,10 @@
-{% extends 'components/decoration/help_popup.html' %}
-{% set popup_title = 'Refresh' %}
-{% set popup_content = 'You have to refresh to see any changes made to the playlist on Spotify.' %}
-{% block content %}
-<div class="mx-1 svg-button" onclick="selectItem('{{collection['uri']}}', 'playlist', true)">
-    {% include 'svg/refresh.svg' %}
+{% extends 'components/decoration/help_popup.html' %} {% set popup_title =
+'Refresh' %} {% set popup_content = 'You have to refresh to see any changes made
+to the playlist on Spotify.' %} {% block content %}
+<div
+  class="mx-1 svg-button"
+  onclick="selectItem('{{collection['uri']}}', 'playlist', true)"
+>
+  {% include 'svg/refresh.svg' %}
 </div>
 {% endblock %}

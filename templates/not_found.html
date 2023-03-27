@@ -1,0 +1,8 @@
+<div id="not-found" class="text-center h-100 overflow-auto">
+  <h4 class="pt-3">Playlist not found :/</h4>
+  <hr class="mx-auto w-50" />
+  <h5 class="pt-1">Maybe you tried accessing somebody else's private playlist.</h5>
+  {% if not user %}
+  <h5 class="pt-1">If it's yours, log in to view it.</h5>
+  {% endif %}
+</div>

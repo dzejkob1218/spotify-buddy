@@ -1,14 +1,20 @@
+<!--  <span class="fw-bold">{{track['name']}}</span> by <span class="fw-bold">{{track['artists']}}</span> -->
 
-  <!--  <span class="fw-bold">{{track['name']}}</span> by <span class="fw-bold">{{track['artists']}}</span> -->
+<div
+  id="{{track.uri}}"
+  class="currently-playing rounded d-flex justify-content-start bg-secondary"
+  onmousedown="selectItem(this.id, 'track')"
+  style="width: 237px; cursor: pointer !important"
+>
+  <img
+    src="{{track.album.images[0]}}"
+    alt="{{track.name}} image"
+    width="50"
+    height="50"
+  />
 
-    <div id="{{track.uri}}" class="currently-playing rounded d-flex justify-content-start bg-secondary"
-        onmousedown="selectItem(this.id, 'track')" style="width: 237px; cursor: pointer !important;">
-
-        <img src="{{track.album.images[0]}}" alt="{{track.name}} image" width="50" height="50">
-
-        <div class="px-2 overflow-hidden text-nowrap text-white">
-            <span class="fw-bold">{{track.name| limit_length(20)}}</span><br>{{track.artists|format_artists_names}}
-        </div>
-
-    </div>
-
+  <div class="px-2 overflow-hidden text-nowrap text-white">
+    <span class="fw-bold">{{track.name| limit_length(20)}}</span
+    ><br />{{track.artists|format_artists_names}}
+  </div>
+</div>

@@ -1,42 +1,47 @@
-<div id="collectionDetails" class="d-flex h-100 border-bottom border-secondary" style="display: none">
-    <div class="d-flex justify-content-center" style="overflow:hidden; height: 25vh; width: 25vh;">
-        <img id="collectionImage" src={{collection.images[-1]}} class="rounded h-100" data-bs-toggle="modal"
-             data-bs-target="#collectionCover">
+<div
+  id="collectionDetails"
+  class="d-flex h-100 border-bottom border-secondary"
+  style="display: none"
+>
+  <div
+    class="d-flex justify-content-center"
+    style="overflow: hidden; height: 25vh; width: 25vh"
+  >
+    <img
+      id="collectionImage"
+      src="{{collection.images[-1]}}"
+      class="rounded h-100"
+      data-bs-toggle="modal"
+      data-bs-target="#collectionCover"
+    />
+  </div>
+  <div class="mt-2 mb-5 mx-3 text-white">
+    <h3 class="fw-bold">{{collection.name|limit_length(100)}}</h3>
+    <h4>by {{collection.owner.name}}</h4>
+    <div class="fw-bold mt-4">{{collection.total_tracks}} tracks</div>
+    <div class="fw-bold" id="activeFiltersNumber"></div>
+    <div class="fw-bold" data-included="0" id="includedTracksNumber"></div>
+  </div>
+
+  <!-- Collection actions -->
+  <div class="ms-auto d-flex">
+    <div>
+      <div class="h-25 ms-auto p-3 d-flex">
+        {% include 'components/buttons/refresh_collection.html' %} {% if user %}
+        {% include 'components/buttons/play_collection.html' %} {% include
+        'components/buttons/save_collection.html' %} {% else %} {% set
+        popup_content = "Log in with Spotify to play, discover and save the
+        selected tracks." %} {% include 'components/decoration/help_button.html'
+        %} {% endif %}
+      </div>
+      {% if user %} {% include 'components/buttons/discover_button.html' %} {%
+      endif %}
     </div>
-    <div class="mt-2 mb-5 mx-3 text-white">
-        <h3 class="fw-bold ">{{collection.name|limit_length(100)}}</h3>
-        <h4>by {{collection.owner.name}}</h4>
-        <div class="fw-bold mt-4">{{collection.total_tracks}} tracks</div>
-        <div class="fw-bold" id="activeFiltersNumber"></div>
-        <div class="fw-bold" data-included="0" id="includedTracksNumber"></div>
-
-    </div>
-
-    <!-- Collection actions -->
-    <div class="ms-auto d-flex">
-        <div>
-        <div class="h-25 ms-auto p-3 d-flex">
-
-            {% include 'components/buttons/refresh_collection.html' %}
-
-            {% if user %}
-
-                {% include 'components/buttons/play_collection.html' %}
-                {% include 'components/buttons/save_collection.html' %}
-            {% else %}
-                {% set popup_content = "Log in with Spotify to play, discover and save the selected tracks." %}
-                {% include 'components/decoration/help_button.html' %}
-            {% endif %}
-        </div>
-        {% if user %}
-            {% include 'components/buttons/discover_button.html' %}
-        {% endif %}
-        </div>
-     </div>
-
-
+  </div>
 </div>
 
 {% set label = 'collectionCover' %}
 {% set image = collection.images[-1] %}
 {% include 'components/modals/modal_cover.html' %}
+
+

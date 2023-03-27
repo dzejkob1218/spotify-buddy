@@ -1,8 +1,8 @@
-{% extends 'components/decoration/help_popup.html' %}
-{% set popup_title = 'Play' %}
-{% set popup_content = 'Play or queue tracks while keeping the filters and order you selected. The shuffle option is actually random, unlike default Spotify shuffle.' %}
-{% block content %}
-<div class="mx-1 svg-button" data-bs-toggle="modal" data-bs-target="#modalPlay" >
-    {% include 'svg/play.svg' %}
+{% extends 'components/decoration/help_popup.html' %} {% set popup_title =
+'Play' %} {% set popup_content = 'Play or queue tracks while keeping the filters
+and order you selected. The shuffle option is actually random, unlike default
+Spotify shuffle.' %} {% block content %}
+<div id="play-collection-button" class="mx-1 svg-button" data-bs-target="#modalPlay">
+  {% include 'svg/play.svg' %}
 </div>
 {% endblock %}

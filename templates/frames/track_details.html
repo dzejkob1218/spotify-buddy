@@ -1,89 +1,122 @@
 <div class="text-white p-1 text-center">
+  <hr />
 
-    <hr>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Track <span class="fw-bold"> #{{entry.track_number}} </span> from
+      <span class="fw-bold">{{entry.album.name}} </span>
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Track <span class="fw-bold"> #{{entry.track_number}} </span> from <span
-                class="fw-bold">{{entry.album.name}} </span></h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Released <span class="fw-bold">{{entry.album|format_date}}</span>
+    </h6>
+  </div>
 
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      <span class="fw-bold">{{entry.duration|format_duration}}</span>
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Released <span class="fw-bold">{{entry.album|format_date}}</span></h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      {% if entry.explicit %} <span class="fw-bold"> Explicit </span> {% else %}
+      Not Explicit {% endif %}
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"><span class="fw-bold">{{entry.duration|format_duration}}</span></h6>
-    </div>
+  {% if has_features %}
 
-    <div class="track-detail p-1">
-        <h6 class="m-0">{% if entry.explicit %} <span class="fw-bold">  Explicit </span> {% else %} Not Explicit {%
-            endif %}</h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      <span class="fw-bold">{{entry.tempo|format_attribute('tempo')}}</span> BPM
+    </h6>
+  </div>
 
-    {% if has_features %}
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Key of <span class="fw-bold">{{entry.key|format_attribute('key')}}{%if not entry.mode%}m{%endif%}</span>, <span class="fw-bold">{{entry.signature}}/4</span> time
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"><span class="fw-bold">{{entry.tempo|format_attribute('tempo')}}</span> BPM </h6>
-    </div>
+  <hr />
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Key of <span class="fw-bold">{{entry.key}}</span>, {{entry.signature}}/4 </h6>
-    </div>
+  {% endif %}
 
-    <hr>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Popularity:
+      <span class="fw-bold"
+        >{{entry.popularity|format_attribute('popularity')}}</span
+      >
+    </h6>
+  </div>
 
-    {% endif %}
+  {% if has_features %}
 
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Valence:
+      <span class="fw-bold">{{entry.valence|format_attribute('valence')}}</span>
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Popularity: <span class="fw-bold">{{entry.popularity|format_attribute('popularity')}}</span></h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Energy:
+      <span class="fw-bold">{{entry.energy|format_attribute('energy')}}</span>
+    </h6>
+  </div>
 
-    {% if has_features %}
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Danceability:
+      <span class="fw-bold">{{entry.dance|format_attribute('dance')}}</span>
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Valence: <span class="fw-bold">{{entry.valence|format_attribute('valence')}}</span></h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Speech:
+      <span class="fw-bold">{{entry.speech|format_attribute('speech')}}</span>
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Energy: <span class="fw-bold">{{entry.energy|format_attribute('energy')}}</span></h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Acoustic:
+      <span class="fw-bold"
+        >{{entry.acoustic|format_attribute('acoustic') }}</span
+      >
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Danceability: <span class="fw-bold">{{entry.dance|format_attribute('dance')}}</span></h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Instrumental:
+      <span class="fw-bold"
+        >{{entry.instrumental|format_attribute('instrumental')}}</span
+      >
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Speech: <span class="fw-bold">{{entry.speech|format_attribute('speech')}}</span></h6>
-    </div>
+  <div class="track-detail p-1">
+    <h6 class="m-0">
+      Live: <span class="fw-bold">{{entry.live|format_attribute('live')}}</span>
+    </h6>
+  </div>
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Acoustic: <span class="fw-bold">{{entry.acoustic|format_attribute('acoustic') }}</span></h6>
-    </div>
+  {% endif %}
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Instrumental: <span class="fw-bold">{{entry.instrumental|format_attribute('instrumental')}}</span></h6>
-    </div>
+  <hr />
 
-    <div class="track-detail p-1">
-        <h6 class="m-0"> Live: <span class="fw-bold">{{entry.live|format_attribute('live')}}</span></h6>
-    </div>
+  {% if not has_features %} There is no data available about this track.
+  <br />
+  It will be excluded from all sorting and filtering.
 
-    {% endif %}
+  <hr />
 
-    <hr>
-
-    {% if not has_features %}
-
-    There is no data available about this track.
-    <br>
-    It will be excluded from all sorting and filtering.
-
-    <hr>
-
-
-    {% endif %}
-
-
+  {% endif %}
 </div>

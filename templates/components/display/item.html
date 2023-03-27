@@ -1,35 +1,45 @@
 <!-- Attributes: entry[uri, name, images=[image, miniature], artists], TD(button:add,remove) -->
 
-<li id="{{entry.uri}}" class="px-0 collection-track search-result {% if not disabled %} item-enabled {% endif %} list-group-item d-flex align-items-center"
-    onmousedown="selectItem(this.id, '{{item_type}}')" style="cursor: pointer !important;">
+<li
+  id="{{entry.uri}}"
+  class="px-0 collection-track search-result {% if not disabled %} item-enabled {% endif %} list-group-item d-flex align-items-center"
+  onmousedown="selectItem(this.id, '{{item_type}}')"
+  style="cursor: pointer !important"
+>
+  <!-- Overlay for excluded results -->
+  {% if disabled %}
+  <div
+    class="position-absolute h-100 w-100"
+    style="background: black; opacity: 0.6"
+  ></div>
+  {% endif %}
 
-    <!-- Overlay for excluded results -->
-    {% if disabled %}
-    <div class="position-absolute h-100 w-100" style="background: black; opacity: .6;"></div>
-    {% endif %}
+  <!-- Miniature -->
+  <img
+    class="ms-2"
+    src="{{entry.album.images[-1]}}"
+    alt="{{ entry.name }} image"
+    width="50"
+    height="50"
+  />
 
-    <!-- Miniature -->
-    <img class="ms-2" src="{{entry.album.images[-1]}}" alt="{{ entry.name }} image" width="50" height="50">
-
-    <!-- Name and artist -->
-    <span class="px-2 overflow-hidden text-nowrap text-white">
-        <span class="fw-bold">
-        {# Allow longer names if there are no criteria columns taking up space #}
-        {{ entry.name | limit_length(40 if criteria_stack else 100) }}
-            </span>
-            <br>
-            {{ entry.artists | format_artists_names }}
+  <!-- Name and artist -->
+  <span class="px-2 overflow-hidden text-nowrap text-white">
+    <span class="fw-bold">
+      {# Allow longer names if there are no criteria columns taking up space #}
+      {{ entry.name | limit_length(40 if criteria_stack else 100) }}
     </span>
+    <br />
+    {{ entry.artists | format_artists_names }}
+  </span>
 
-    <!-- Sort criteria -->
-    {% if criteria_stack %}
-    <div  class="ms-auto flex-shrink-0 d-flex justify-content-around w-50 me-5">
-
-        {# 'criteria' here is a dictionary key representing a collection attribute, with value of a dictionary containing valid filters (min, max, exclude etc.) #}
-        {% for criteria in criteria_stack[:3] %}
-            {% include 'components/labels/item_criteria.html' %}
-        {% endfor %}
-    </div>
-    {% endif %}
-
+  <!-- Sort criteria -->
+  {% if criteria_stack %}
+  <div class="ms-auto flex-shrink-0 d-flex justify-content-around w-50 me-5">
+    {# 'criteria' here is a dictionary key representing a collection attribute,
+    with value of a dictionary containing valid filters (min, max, exclude etc.)
+    #} {% for criteria in criteria_stack[:3] %} {% include
+    'components/labels/item_criteria.html' %} {% endfor %}
+  </div>
+  {% endif %}
 </li>

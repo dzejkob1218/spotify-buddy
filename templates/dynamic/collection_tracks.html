@@ -1,73 +1,82 @@
 <!-- Criteria bar -->
-<div id="criteriaBar" class="list-group-item position-relative d-flex align-items-center px-0"
-     style="background: none; border: none; height: 50px; bottom: 50px; margin-bottom: -50px; margin-right: 13px; ">
+<div
+  id="criteriaBar"
+  class="list-group-item position-relative d-flex align-items-center px-0"
+  style="
+    background: none;
+    border: none;
+    height: 50px;
+    bottom: 50px;
+    margin-bottom: -50px;
+    margin-right: 13px;
+  "
+>
+  <div class="ms-auto"></div>
 
-    <div class="ms-auto"></div>
+  {% if pages|length > 1 %} {% include 'components/display/pages_bar.html' %} {%
+  endif %}
+  <!-- Sort criteria -->
+  <div class="ms-2 flex-shrink-0 d-flex justify-content-around w-50 me-5">
+    {% for criteria in criteria_stack[:3] %} {% set criteria_index = loop.index
+    %} {% include 'components/labels/sorting_label.html' %} {% endfor %}
+  </div>
+  {% if criteria_stack %}
+  <script>
+    $("#activeFiltersNumber").text(
+      "{{criteria_stack|length}} filter{% if criteria_stack|length > 1 %}s{% endif %} active"
+    );
+    $("#includedTracksNumber").text(
+      "{{included_number}} track{% if included_number > 1 %}s{% endif %} included"
+    );
+  </script>
+  {% else %}
+  <script>
+    $("#activeFiltersNumber").text("");
+    $("#includedTracksNumber").text("");
+  </script>
+  {% endif %}
 
-    {% if pages|length > 1 %}
-    {% include 'components/display/pages_bar.html' %}
-    {% endif %}
-    <!-- Sort criteria -->
-    <div class="ms-2 flex-shrink-0 d-flex justify-content-around w-50 me-5">
-        {% for criteria in criteria_stack[:3] %}
-        {% set criteria_index = loop.index %}
-        {% include 'components/labels/sorting_label.html' %}
-        {% endfor %}
-    </div>
-    {% if criteria_stack %}
-    <script>
-        $( "#activeFiltersNumber" ).text("{{criteria_stack|length}} filter{% if criteria_stack|length > 1 %}s{% endif %} active");
-        $( "#includedTracksNumber" ).text("{{included_number}} track{% if included_number > 1 %}s{% endif %} included");
+  <div class="position-absolute" style="right: 0px">
+    {% set popup_content = "Tracks here will display in order you select. Tracks
+    that don't make it through the filters are always at the bottom. Any actions
+    like playing or saving the tracks will only include the rest. Click a track
+    to see its details." %} {% include 'components/decoration/help_button.html'
+    %}
+  </div>
+</div>
 
-    </script>
-    {% else %}
-    <script>
-        $( "#activeFiltersNumber" ).text("");
-        $( "#includedTracksNumber" ).text("");
+<div id="trackList" class="overflow-auto h-100" style="scrollbar-color: dark">
+  {% set item_type = 'track' %}
 
-    </script>
-    {% endif %}
+  <!-- Included data list -->
+  {% if data %}
+  <ul class="list-group">
+    {% for entry in data %} {% include 'components/display/item.html' %} {%
+    endfor %}
+  </ul>
+  {% endif %}
 
-    <div class="position-absolute" style="right: 0px">
-    {% set popup_content = "Tracks here will display in order you select. Tracks that don't make it through the filters are always at the bottom. Any actions like playing or saving the tracks will only include the rest. Click a track to see its details." %}
-    {% include 'components/decoration/help_button.html' %}
-        </div>
+  <!-- Excluded data list -->
+  {% if disabled_data %} {% set disabled = True %}
+  <ul class="list-group">
+    {% for entry in disabled_data %} {% include 'components/display/item.html'
+    %} {% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- In case nothing is found -->
+  {% if not data and not disabled_data %}
+  <li
+    class="list-group-item d-flex align-items-center text-white"
+    style="background-color: black"
+  >
+    No tracks found
+  </li>
+  {% endif %}
 </div>
 
 
-<div id="trackList" class="overflow-auto h-100" style="scrollbar-color: dark;">
-
-    {% set item_type = 'track' %}
-
-    <!-- Included data list -->
-    {% if data %}
-    <ul class="list-group">
-        {% for entry in data %}
-        {% include 'components/display/item.html' %}
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    <!-- Excluded data list -->
-    {% if disabled_data %}
-    {% set disabled = True %}
-    <ul class="list-group">
-        {% for entry in disabled_data %}
-        {% include 'components/display/item.html' %}
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    <!-- In case nothing is found -->
-    {% if not data and not disabled_data %}
-    <li class="list-group-item d-flex align-items-center text-white" style="background-color: black ">
-        No tracks found
-    </li>
-    {% endif %}
-</div>
-
-{# Sending the modals along with tracks gives them access to data they need and prevents the user from
-attempting to play or save tracks that haven't finished loading #}
+{# Modals #}
 {% include 'components/modals/modal_save.html' %}
 {% include 'components/modals/modal_play.html' %}
 {% include 'components/modals/modal_discover.html' %}

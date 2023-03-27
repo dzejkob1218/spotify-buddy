@@ -1,17 +1,23 @@
 <!-- Attributes: entry[uri, name, TD(miniature), (image), (artists)], TD(button:add,remove) -->
-<div id="{{entry.uri}}" class="px-0 collection-track search-result {% if not disabled %} item-enabled {% endif %} list-group-item d-flex align-items-center"
-    onmousedown="selectItem(this.id, '{{item_type}}')" style="cursor: pointer">
+<div
+  id="{{entry.uri}}"
+  class="px-0 collection-track search-result {% if not disabled %} item-enabled {% endif %} list-group-item d-flex align-items-center"
+  onmousedown="selectItem(this.id, '{{item_type}}')"
+  style="cursor: pointer"
+>
+  <!-- Miniature -->
+  <img
+    class="ms-2"
+    src="{{entry.album.images[0]}}"
+    alt="{{ entry.name }} image"
+    width="50"
+    height="50"
+  />
 
-    <!-- Miniature -->
-    <img class="ms-2" src="{{entry.album.images[0]}}" alt="{{ entry.name }} image" width="50" height="50">
-
-    <!-- Name and artist -->
-    <span class="px-2 overflow-hidden text-nowrap text-white">
-        <span class="fw-bold">
-        {{ entry.name | limit_length(40)}}
-            </span>
-            <br>
-            {{entry.artists |format_artists_names}}
-        </span>
-
+  <!-- Name and artist -->
+  <span class="px-2 overflow-hidden text-nowrap text-white">
+    <span class="fw-bold"> {{ entry.name | limit_length(40)}} </span>
+    <br />
+    {{entry.artists |format_artists_names}}
+  </span>
 </div>

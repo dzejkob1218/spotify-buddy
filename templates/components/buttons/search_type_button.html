@@ -1,3 +1,9 @@
-<button class="search-type flex-grow-0" data-type="{{type}}" id="{{type}}-search-type" onclick="selectSearchType(this.id)" style="width: 100px; overflow: hidden;">
-    {{ type|capitalize + ('s' if not type == 'library' else '') }}
+<button
+  class="search-type flex-grow-0"
+  data-type="{{type}}"
+  id="{{type}}-search-type"
+  onclick="selectSearchType(this.id)"
+  style="width: 100px; overflow: hidden"
+>
+  {{ type|capitalize + ('s' if not type == 'library' else '') }}
 </button>

@@ -13,6 +13,7 @@
                 url: '/_current',
                 success: function(data) {
                   $( "#currentlyPlaying" ).html(data);
+                  $( "#currentlyPlaying" ).fadeIn(500);
                 }
             });
     }

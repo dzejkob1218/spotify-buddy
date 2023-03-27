@@ -1,15 +1,17 @@
-<div class="sort-label text-white rounded py-1" onclick="sortTracks('{{criteria}}')">
-
-        {% if criteria_index == 1 and explicit_sort %}
-         <div class="position-absolute text-center" style="bottom: 40px; width:100px;">
-             Sorting by:
-         </div>
-        {% endif %}
-
-        {# Without the additional div here the labels aren't centered properly #}
-        <div class="text-white text-center {{'fw-bold' if criteria_index == 1}} " style="width:110px;">
-            {{criteria|format_attribute_name}}
-        </div>
-
-
+<div
+  class="sort-label text-white rounded py-1"
+  onclick="sortTracks('{{criteria}}')"
+>
+  {% if criteria_index == 1 and explicit_sort %}
+  <div class="position-absolute text-center" style="bottom: 40px; width: 100px">
+    Sorting by:
+  </div>
+  {% endif %} {# Without the additional div here the labels aren't centered
+  properly #}
+  <div
+    class="text-white text-center {{'fw-bold' if criteria_index == 1}} "
+    style="width: 110px"
+  >
+    {{criteria|format_attribute_name}}
+  </div>
 </div>

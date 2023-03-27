@@ -1,13 +1,13 @@
 {% if data %}
 <ul class="list-group">
-    {% for entry in data %}
-
-    {% include 'components/display/search_' + item_type + '.html' %}
-
-    {% endfor %}
+  {% for entry in data %} {% include 'components/display/search_' + item_type +
+  '.html' %} {% endfor %}
 </ul>
 {% else %}
-<li class="list-group-item d-flex align-items-center text-white" style="background-color: black ">
-    Nothing found
+<li
+  class="list-group-item d-flex align-items-center text-white"
+  style="background-color: black"
+>
+  Nothing found
 </li>
 {% endif %}

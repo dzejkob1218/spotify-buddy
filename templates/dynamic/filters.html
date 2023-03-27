@@ -1,50 +1,74 @@
 <!-- Custom elements to clone over JQuery UI -->
 <div style="display: none">
+  <div class="slider-marker position-absolute"></div>
 
-    <div class="slider-marker position-absolute"></div>
+  <div class="filter-bar w-100 position-relative" style="top: 50%; height: 1px">
+    <div
+      class="w-100 position-relative rounded"
+      style="background-color: black; bottom: 5px; height: 10px"
+    ></div>
+  </div>
 
+  <div
+    class="slider-range-overlay w-100 h-100 rounded"
+    style="background: grey"
+  ></div>
 
-    <div class="filter-bar w-100 position-relative" style="top:50%; height: 1px">
-        <div class="w-100 position-relative rounded" style="background-color: black; bottom:5px; height: 10px"></div>
-    </div>
-
-    <div class="slider-range-overlay w-100 h-100 rounded" style="background: grey; ">
-    </div>
-
-    <div id="customHandleMin" class="position-relative" style="top:50%; width: 0px; height: 0px;">
-      <div class="slider-handle-bubble position-relative text-white text-end rounded-pill " style="background: none; right:23px; bottom:13px; width:30px; height:30px">
-         <div class="slider-handle-label text-white rounded-pill h-100 w-100">42</div>
+  <div
+    id="customHandleMin"
+    class="position-relative"
+    style="top: 50%; width: 0px; height: 0px"
+  >
+    <div
+      class="slider-handle-bubble position-relative text-white text-end rounded-pill"
+      style="
+        background: none;
+        right: 23px;
+        bottom: 13px;
+        width: 30px;
+        height: 30px;
+      "
+    >
+      <div class="slider-handle-label text-white rounded-pill h-100 w-100">
+        42
       </div>
     </div>
+  </div>
 
-    <div id="customHandleMax" class="position-relative" style="left:75%; top:50%;  width: 0px; height: 0px;">
-      <div class="slider-handle-bubble position-relative text-white text-start rounded-pill" style="background: none; bottom:13px; width:30px; height:30px">
-        <div class="slider-handle-label text-white rounded-pill h-100 w-100">42</div>
+  <div
+    id="customHandleMax"
+    class="position-relative"
+    style="left: 75%; top: 50%; width: 0px; height: 0px"
+  >
+    <div
+      class="slider-handle-bubble position-relative text-white text-start rounded-pill"
+      style="background: none; bottom: 13px; width: 30px; height: 30px"
+    >
+      <div class="slider-handle-label text-white rounded-pill h-100 w-100">
+        42
       </div>
     </div>
+  </div>
 </div>
 
-<div style="overflow-y: scroll;">
-    <div class="d-flex collection-attribute px-4" style="display: none">
-        <h3 class="fw-bold pb-1 m-0 me-auto">Filters</h3>
-        {% set popup_content = "Here you can sort and filter the playlist. All the values you see come from Spotify, but can't be accessed in their app. The numbers next to each value are the average for all tracks in the playlist. Click a value to sort the tracks and use the sliders to filter." %}
-        {% include 'components/decoration/help_button.html' %}
-    </div>
-    {# Filters #}
-    {% for attribute in averages %}
-        {% include 'components/display/collection-attribute.html' %}
-    {% endfor %}
-
-    {# Invalid filters #}
-    {% if invalid %}
-        {# These static elements have a 'collection-attribute' class to include them in the fade-in #}
-        <hr class="mb-1 p-0 text-white collection-attribute" style="display: none">
-        <p class="m-0 p-0 collection-attribute" style="color: grey; display: none">These filters are disabled, possibly because every song in the playlist has the same value.</p>
-        {% for attribute in invalid %}
-            {% include 'components/display/invalid-attribute.html' %}
-        {% endfor %}
-    {% endif %}
-
+<div style="overflow-y: scroll">
+  <div class="d-flex collection-attribute px-4" style="display: none">
+    <h3 class="fw-bold pb-1 m-0 me-auto">Filters</h3>
+    {% set popup_content = "Here you can sort and filter the playlist. All the
+    values you see come from Spotify, but can't be accessed in their app. The
+    numbers next to each value are the average for all tracks in the playlist.
+    Click a value to sort the tracks and use the sliders to filter." %} {%
+    include 'components/decoration/help_button.html' %}
+  </div>
+  {# Filters #} {% for attribute in averages %} {% include
+  'components/display/collection-attribute.html' %} {% endfor %} {# Invalid
+  filters #} {% if invalid %} {# These static elements have a
+  'collection-attribute' class to include them in the fade-in #}
+  <hr class="mb-1 p-0 text-white collection-attribute" style="display: none" />
+  <p class="m-0 p-0 collection-attribute" style="color: grey; display: none">
+    These filters are disabled, possibly because every song in the playlist has
+    the same value.
+  </p>
+  {% for attribute in invalid %} {% include
+  'components/display/invalid-attribute.html' %} {% endfor %} {% endif %}
 </div>
-
-

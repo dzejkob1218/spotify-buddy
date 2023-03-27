@@ -4,6 +4,7 @@ import random
 import json
 from flask import Flask, session, request, redirect, render_template, jsonify, url_for
 from spotifytools import SpotifySession, GeniusSession, Playlist, Track, Collection
+from spotifytools.exceptions import SpotifyToolsNotFoundException
 # from classes.collections.collection import Collection
 from flask_session import Session
 from helpers.colors import gradient_from_url, DEFAULT_COLORS
@@ -47,13 +48,17 @@ def check_session():
         session['banned_songs'] = []
 
 
-def go_back():
-    """Returns redirect to the last visited page."""
-    # Temporarily disabled
-    if False and session.get('selected_collection'):
-        return redirect('/?collection=' + session.get('selected_collection').uri)
-    else:
-        return redirect('/')
+def go_back(skip_private=False):
+    """
+    Returns redirect to the last visited page.
+
+    If skip_private is set to true, private collections will redirect to home screen.
+    """
+
+    if selected := session.get('selected_collection'):
+        if not skip_private or selected.public:
+            return redirect('/?collection=' + selected.uri)
+    return redirect('/')
 
 
 @app.route('/')
@@ -83,7 +88,10 @@ def view_collection():
         collection = previously_selected
     elif requested_uri:
         # Load a new collection object (for now only playlists are supported).
-        collection = sp.fetch_item(requested_uri)
+        try:
+            collection = sp.fetch_item(requested_uri)
+        except SpotifyToolsNotFoundException:
+            return render_template('not_found.html')
         session['selected_collection'] = collection
     else:
         # Return welcome page in case of no collection.
@@ -95,6 +103,10 @@ def view_collection():
         session['filters_stack'] = []
         session['sort_criteria'] = None
         session['explicit_order'] = None
+        session['collection_tracks_features'] = None
+        session['collection_tracks_nofeatures'] = None
+        session['latest_included_tracks'] = None
+        session['latest_rejected_tracks'] = None
 
         return render_template('dynamic/collection_details.html',
                                collection=collection,
@@ -437,7 +449,7 @@ def callback():
 
 @app.route('/logout')
 def logout():
-    last_page = go_back()
+    last_page = go_back(skip_private=True)
     try:
         # Remove the CACHE file (.cache-test) so that a new user can authorize.
         os.remove(session_cache_path())
@@ -473,6 +485,7 @@ def track_details():
     sp: SpotifySession = session.get('sp')
     uri = request.args.get('uri', type=str)
     track = sp.fetch_item(uri)
+    sp.load(track, details=True, features=True)
     session['selected_track'] = track
     return render_template('dynamic/track.html',
                            entry=track,
@@ -613,7 +626,7 @@ def format_attribute_value(value, attribute):
     if attribute in ['dance', 'energy', 'speech', 'acoustic', 'instrumental', 'live', 'valence']:
         return round(value * 100)
 
-    if attribute in ['explicit, tempo']:
+    if attribute in ['explicit', 'tempo']:
         return round(value)
 
     else:
