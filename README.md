@@ -5,6 +5,10 @@ A dynamic Flask app that connects to Spotify API to show metadata, filter tracks
 
 ![screenshot](screenshot.png)
 
+This is still a work in progress. Expect a lot of bugs and even more cool features coming soon. 
+
+The app isn't optimised for mobile yet so visit it on a desktop if you can.
+
 ## How to use
 There's a **search bar** in the upper left corner, but you can only search for public playlists until you log in with Spotify.
 
