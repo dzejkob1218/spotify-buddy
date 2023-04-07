@@ -1,5 +1,5 @@
 # Spotify Buddy
-[**Preview in action!**](https://dzejkob1219.pythonanywhere.com/)
+### [**Preview in action!**](https://dzejkob1219.pythonanywhere.com/)
 
 A dynamic Flask app that connects to Spotify API to show metadata, filter tracks, create new playlists and more.
 
@@ -7,14 +7,14 @@ A dynamic Flask app that connects to Spotify API to show metadata, filter tracks
 
 This is still a work in progress. Expect a lot of bugs and even more cool features coming soon. 
 
-The app isn't optimised for mobile yet so visit it on a desktop if you can.
+The app isn't optimised for mobile yet, so visit it on a desktop if you can.
 
 ## How to use
 There's a **search bar** in the upper left corner, but you can only search for public playlists until you log in with Spotify.
 
-Large playlist (thousands of tracks) will take some time to load because Spotify throttles their API.
+Large playlist (thousands of tracks) take some time to load because Spotify throttles their API.
 
-When a playlist loads, on the right you'll see information that Spotify keeps about every track, but doesn't make available in any way other than the API.
+When a playlist loads, on the right you'll see information that Spotify keeps about every track, but doesn't make available in any other way than the API.
 
 The value next to each name is the playlist average. Click any of the values to sort the tracks, click again to reverse sort and again to cancel. Hover over a bar to see the minimum and maximum values in the playlist. Drag the values to filter the tracks. 
 
@@ -30,7 +30,7 @@ You can also create a similar playlist with the **discover** button. The new pla
 
 
 ## Lyrics
-Spotify Buddy can display lyrics for every song as they're available on genius.com.
+Spotify Buddy can display lyrics for every song if they're available on genius.com.
 
 Unfortunately, the [preview site](https://dzejkob1219.pythonanywhere.com/) is currently being hosted for free, and has limited access to the web, so it can't access the genius.com API.
 
