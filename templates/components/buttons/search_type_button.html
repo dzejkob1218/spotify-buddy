@@ -3,7 +3,7 @@
   data-type="{{type}}"
   id="{{type}}-search-type"
   onclick="selectSearchType(this.id)"
-  style="width: 100px; overflow: hidden"
+  style="width: 80px; min-width:60px; overflow: hidden"
 >
   {{ type|capitalize + ('s' if not type == 'library' else '') }}
 </button>

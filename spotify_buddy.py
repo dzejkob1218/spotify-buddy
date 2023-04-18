@@ -101,6 +101,7 @@ def view_collection():
         # Initialize criteria stack
         session['new_playlist_name'] = collection.name + " (by SpotifyBuddy)"
         session['filters_stack'] = []
+
         session['sort_criteria'] = None
         session['explicit_order'] = None
         session['collection_tracks_features'] = None
@@ -166,7 +167,6 @@ def load_collection_details():
             no_features.append(track)
 
     # Save results to session for easy pagination.
-    # TODO: What is this and where is it used
     session['collection_tracks_features'] = features
     session['collection_tracks_nofeatures'] = no_features
     session['latest_included_tracks'] = features
@@ -224,6 +224,7 @@ def order_tracks():
 
     # Load, filter and sort tracks from the requested collection
     tracks_features = session.get('collection_tracks_features')
+    tracks_nofeatures = session.get('collection_tracks_nofeatures')
     tracks_filtered = filter_tracks(tracks_features, filters)
 
     # Save results to session for easy pagination
@@ -258,7 +259,7 @@ def show_page():
     if remaining_space and not remaining_space == page_len and len(all_excluded) > 0:
         excluded_page = all_excluded[0: remaining_space]
     elif remaining_space == page_len:
-        page_offset = (len(all_included) // page_len) + 1
+        page_offset = (len(all_included) // page_len) + bool(len(all_included) % page_len)
         data_offset = len(all_included) % page_len
         exc_page = page - page_offset
         excluded_page = all_excluded[exc_page * page_len + data_offset: (exc_page + 1) * page_len + data_offset]

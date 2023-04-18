@@ -341,7 +341,7 @@ function createSlider(criteria, markers = null, average = 0, min = 0, max = 100,
 
     // Initialize values on custom handles
     let $labels = newSlider.find($(".slider-handle-label"));
-    //$labels.fadeToggle();
+    $labels.fadeToggle();
     $labels.eq(0).text(criteria == 'duration' ? formatDuration(min) : min);
     $labels.eq(1).text(criteria == 'duration' ? formatDuration(max) : max);
 
@@ -552,7 +552,7 @@ function filtersFadeIn() {
 
 
             // Fade out the labels to create 'wave' effect
-            $(this).find(".slider-handle-label").stop().fadeOut();
+            // $(this).find(".slider-handle-label").stop().fadeOut();
 
             // Add the labels fade effects on hover
             $(this).hover(

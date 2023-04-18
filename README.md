@@ -1,43 +1,37 @@
 # Spotify Buddy
-[**Preview in action!**](https://dzejkob1219.pythonanywhere.com/)
+### [**Preview in action!**](https://dzejkob1219.pythonanywhere.com/)
 
-A dynamic Flask web app that connects to Spotify API to let you view metadata about songs, filter your tracks, create new playlists and more.
+A dynamic Flask app that connects to Spotify API to show metadata, filter tracks, create new playlists and more.
 
 ![screenshot](screenshot.png)
 
-## Bugs and performance
-Spotify Buddy is a work in progress.
-Because of the great variability of content on Spotify, some playlists may still contain items that hang up the code. If the site looks stuck, try loading a different playlist. Large playlist (with thousands of songs) can take some time to load.
+This is still a work in progress. Expect a lot of bugs and even more cool features coming soon. 
+
+The app isn't optimised for mobile yet, so visit it on a desktop if you can.
 
 ## How to use
-In the upper left corner you'll find the **search bar**, use it to search for a playlist.
+There's a **search bar** in the upper left corner, but you can only search for public playlists until you log in with Spotify.
 
-Alternatively you can **log in** to Spotify and select playlists from your library.
+Large playlist (thousands of tracks) take some time to load because Spotify throttles their API.
 
-When a playlist loads, on the right you'll see **filters**. The value you see next to each name gives you the average for all tracks in a playlist. Click a filter to apply **sorting**, click again to reverse sort. Hover over a bar to see the minimum and maximum values in the playlist. Drag the values to filter out tracks outside the range. 
+When a playlist loads, on the right you'll see information that Spotify keeps about every track, but doesn't make available in any other way than the API.
 
-Click a track in the playlist view or the search results to view details.
+The numbers next to each name are the playlist averages. Click any of them to **sort** the tracks, click again to reverse sort and again to cancel. Hover over a bar to see the minimum and maximum values in the playlist. Drag the values to **filter** the tracks. 
 
-Click on an image to see full-resolution album art.
+All other actions like starting playback or making new playlists will keep the filters and sorting you set. 
 
-If you connect to Spotify, you can **play or queue** the selected track, as well as the results of sorting and filtering a playlist, or **save** them to a new playlist in your library.
+Click any track to view its details. When you log in you can also see your currently playing track.
 
-## A word about the lyrics
-Spotify Buddy displays lyrics for each song selected as they appear on genius.com.
+Click on any image to see it in full resolution.
 
-However, the [preview site](https://dzejkob1219.pythonanywhere.com/) is currently hosted for free, which means it has limited access to the web.
+If you connect to Spotify, you can **play** or **queue** the selected tracks (actual random shuffle included), or **save** them to a new playlist in your library.
 
-Unfortunately, genius.com, as well as many other lyrics sites, don't provide access to the lyrics themselves through their APIs, at least not for free, because of copyright problems.
+You can also create a similar playlist with the **discover** button. The new playlist will appear in your library after a while and it will contain tracks from the same and related artists, but none of the original ones.
 
-Displaying the link to the page with the lyrics is the best alternative Spotify Buddy can provide right now.
 
-If, somehow, there is a demand, I could shell out a couple $ to move the site somewhere where it can access the web freely.
+## Lyrics
+Spotify Buddy can display lyrics for every song if they're available on genius.com.
+
+Unfortunately, the [preview site](https://dzejkob1219.pythonanywhere.com/) is currently being hosted for free, and has limited access to the web, so it can't access the genius.com API.
 
 Meanwhile, if you like the app and want to use it in its full functionality, you can download the source code and run it yourself.
-
-To do that, you'd need to acquire API credentials for both Spotify and genius.com and store them as environment variables where the app is running. 
-Spotify Buddy will then be able to scrape genius.com and display lyrics on the page.
-Just please don't make the site you host yourself available to the public (see license).
-
-
-

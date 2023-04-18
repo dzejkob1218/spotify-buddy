@@ -12,6 +12,7 @@
     var average = {{averages[attribute]['avg'] | format_attribute_value(attribute)}};
     var min = {{averages[attribute]['min'] | format_attribute_value(attribute)}};
     var max = {{averages[attribute]['max'] | format_attribute_value(attribute)}};
-    createSlider('{{attribute}}', markers, average, min, max);
+    slider = createSlider('{{attribute}}', markers, average, min, max);
+
   </script>
 </div>

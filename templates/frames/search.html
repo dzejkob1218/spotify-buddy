@@ -1,21 +1,46 @@
-<div class="pt-2 mt-2">
-  <div class="d-flex justify-content-center">
+<!-- <div class="pt-2 mt-2">
+  <div class="border border-danger d-flex flex-wrap justify-content-left align-items-center">
     <input
       id="search-query"
       autocomplete="off"
       type="text"
-      class="px-2 rounded-pill"
+      class="px-2 rounded-pill border border-info"
       style="margin: 3px; height: 30px; color: black"
       placeholder="Search..."
       size="20"
     />
+    <div class="border border-warning flex-grow-0">
     {# Load search type buttons, include user library only if user is authorized
     #} {% for type in (['playlist', 'track', 'library'] if user else
     ['playlist', 'track']) %} {% include
     'components/buttons/search_type_button.html' %} {% endfor %}
+      <div>
+  </div> -->
+
+<div class="container mt-2 px-1">
+  <div class="row flex-lg-row flex-column">
+    <div class="px-1 col">
+      <input
+        id="search-query"
+        autocomplete="off"
+        type="text"
+        class="w-100 px-2 rounded-pill border border-info"
+        style="min-width: 100px; margin: 3px; height: 30px; color: black"
+        placeholder="Search..."
+        size="20"
+      />
+    </div>
+    <div class="px-0 col">
+      <div class=" h-100 d-flex">
+        {# Load search type buttons, include user library only if user is authorized #}
+        {% for type in (['playlist', 'track', 'library'] if user else ['playlist', 'track']) %}
+          {% include 'components/buttons/search_type_button.html' %}
+        {% endfor %}
+      </div>
+    </div>
   </div>
 
-  <hr class="my-0" />
+    <hr class="my-0" />
   <div
     id="searchResults"
     class="overflow-auto position-absolute"
@@ -23,4 +48,9 @@
   >
     {# Placeholder for the search results #}
   </div>
+
 </div>
+
+
+
+
