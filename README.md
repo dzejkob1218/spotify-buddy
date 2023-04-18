@@ -16,15 +16,15 @@ Large playlist (thousands of tracks) take some time to load because Spotify thro
 
 When a playlist loads, on the right you'll see information that Spotify keeps about every track, but doesn't make available in any other way than the API.
 
-The numbers next to each name are the playlist averages. Click any of them to **sort** the tracks, click again to reverse sort and again to cancel. Hover over a bar to see the minimum and maximum values in the playlist. Drag the values to **filter** the tracks. 
+The value next to each name is the playlist average. Click any of the values to sort the tracks, click again to reverse sort and again to cancel. Hover over a bar to see the minimum and maximum values in the playlist. Drag the values to filter the tracks. 
 
-All other actions like starting playback or making new playlists will keep the filters and sorting you set. 
+All actions like playing the tracks or making new playlists will keep the filters and sorting. 
 
 Click any track to view its details. When you log in you can also see your currently playing track.
 
-Click on any image to see it in full resolution.
+Click on an image to see full-resolution album art.
 
-If you connect to Spotify, you can **play** or **queue** the selected tracks (actual random shuffle included), or **save** them to a new playlist in your library.
+If you connect to Spotify, you can **play or queue** the selected tracks (actually random shuffle included), or **save** them to a new playlist in your library.
 
 You can also create a similar playlist with the **discover** button. The new playlist will appear in your library after a while and it will contain tracks from the same and related artists, but none of the original ones.
 
