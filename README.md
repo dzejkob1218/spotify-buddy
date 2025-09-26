@@ -1,5 +1,13 @@
 # Spotify Buddy
-### [**Preview in action!**](https://dzejkob1219.pythonanywhere.com/)
+
+### Deprecated [*]
+Lamentably, Spotify has recently limited independent developers' access to API data, including most of the features that this app operated on.
+
+I'm keeping this repo solely as a keepsake / portfolio piece.
+
+I might get a demo running one day that operates on **completely random, made-up data, which doesn't reflect the real data on Spotify's end, which we no longer have access to**
+
+---
 
 A dynamic Flask app that connects to Spotify API to show metadata, filter tracks, create new playlists and more.
 
